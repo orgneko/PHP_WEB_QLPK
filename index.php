@@ -34,10 +34,11 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
 
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SportWear Shop - Quần áo thể thao chất lượng</title>
+    <title>Phòng Khám Đa Khoa Ánh Sáng</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -46,16 +47,19 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
             background: #f6f8fa;
             color: #222;
         }
+
         .navbar {
             background: linear-gradient(90deg, #007bff 0%, #43cea2 100%) !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
         }
+
         .navbar-brand {
             font-weight: bold;
             font-size: 28px;
             color: #ffe600 !important;
             letter-spacing: 1px;
         }
+
         .navbar-nav .nav-link {
             color: #fff !important;
             font-size: 16px;
@@ -63,78 +67,97 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
             margin: 0 8px;
             transition: color 0.2s;
         }
+
         .navbar-nav .nav-link.text-warning {
             color: #ffe600 !important;
             font-weight: bold;
         }
-        .navbar-nav .nav-link:hover, .navbar-nav .nav-link.active {
+
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active {
             color: #43cea2 !important;
         }
+
         .navbar-toggler {
             border: none;
         }
+
         .banner-carousel {
             background: #232323;
         }
+
         .carousel-inner {
             min-height: 420px;
             border-radius: 0 0 24px 24px;
             overflow: hidden;
         }
+
         .carousel-item {
             position: relative;
         }
+
         .carousel-control-prev-icon,
         .carousel-control-next-icon {
             background-color: #ffe600;
             border-radius: 50%;
         }
+
         .category-filter {
             background: #fff;
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 32px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
+
         .product-card {
             border: none;
             border-radius: 14px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
             transition: transform 0.3s, box-shadow 0.3s;
             background: #fff;
         }
+
         .product-card:hover {
             transform: translateY(-7px) scale(1.03);
-            box-shadow: 0 8px 24px rgba(67,206,162,0.13);
+            box-shadow: 0 8px 24px rgba(67, 206, 162, 0.13);
         }
+
         .card-title {
             font-size: 18px;
             font-weight: 600;
             color: #232323;
         }
+
         .price-original {
             text-decoration: line-through;
             color: #6c757d;
             font-size: 15px;
         }
+
         .price-sale {
             color: #dc3545;
             font-weight: bold;
             font-size: 18px;
         }
+
         .btn-outline-primary {
             border-radius: 6px;
             font-weight: 500;
         }
-        .btn-primary, .btn-outline-primary:active {
+
+        .btn-primary,
+        .btn-outline-primary:active {
             background: linear-gradient(90deg, #007bff 0%, #43cea2 100%);
             border: none;
             font-weight: 600;
             border-radius: 6px;
         }
+
         .btn-primary:hover {
             background: linear-gradient(90deg, #43cea2 0%, #007bff 100%);
         }
+
         .footer {
             background: #232323;
             color: #fff;
@@ -142,6 +165,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
             font-family: 'Roboto', Arial, sans-serif;
             margin-top: 48px;
         }
+
         .footer h5 {
             color: #ffe600;
             font-size: 18px;
@@ -149,24 +173,29 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
             margin-bottom: 18px;
             letter-spacing: 0.5px;
         }
+
         .footer a {
             color: #fff;
             text-decoration: none;
             transition: color 0.2s;
         }
+
         .footer a:hover {
             color: #43cea2;
             text-decoration: underline;
         }
+
         .footer .social-icons a {
             font-size: 22px;
             margin-right: 14px;
             color: #fff;
             transition: color 0.2s;
         }
+
         .footer .social-icons a:hover {
             color: #ffe600;
         }
+
         .footer .footer-bottom {
             display: flex;
             align-items: center;
@@ -174,6 +203,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
             margin-top: 30px;
             padding-bottom: 18px;
         }
+
         .footer .footer-bottom button {
             background: #002b5c;
             color: #fff;
@@ -183,26 +213,32 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
             font-weight: bold;
             font-size: 15px;
         }
+
         @media (max-width: 991px) {
             .navbar-nav.mx-auto {
                 margin-left: 0 !important;
                 margin-right: 0 !important;
             }
+
             .footer .container {
                 flex-direction: column;
             }
         }
+
         @media (max-width: 600px) {
             .category-filter {
                 padding: 12px;
             }
+
             .footer {
                 padding: 24px 0 0 0;
             }
+
             .carousel-inner {
                 min-height: 220px;
             }
         }
+
         .banner-carousel .banner-title {
             font-size: 48px;
             font-weight: bold;
@@ -211,12 +247,14 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
             margin-top: 80px;
             text-shadow: 2px 2px 8px #232323;
         }
+
         .banner-carousel .banner-sub {
             font-size: 28px;
             color: #fff;
             text-align: center;
             margin-bottom: 32px;
         }
+
         .banner-carousel .banner-btn {
             display: block;
             margin: 32px auto 0 auto;
@@ -227,16 +265,17 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
             border: none;
             border-radius: 30px;
             padding: 10px 32px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
     </style>
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(90deg, #007bff 0%, #43cea2 100%);">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="index.php" style="font-weight: bold; font-size: 28px; color: #ffe600;">
-                SportWear Shop
+                Đa Khoa Ánh Sáng
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -247,7 +286,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                         <a class="nav-link text-white" href="index.php">Trang chủ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="products.php">Sản phẩm mới</a>
+                        <a class="nav-link text-white" href="products.php">Các gói khám bệnh</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-white" href="news.php">Tin tức và khuyến mãi</a>
@@ -299,7 +338,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
         </div>
     </nav>
 
-    
+
     <div class="banner-carousel">
         <div class="carousel-inner" style="min-height: 420px;">
             <div class="carousel-item active">
@@ -391,16 +430,16 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
         <div class="category-filter">
             <form method="GET" class="row g-3">
                 <div class="col-md-4">
-                    <input type="text" class="form-control" name="search" 
-                           value="<?= htmlspecialchars($search) ?>" 
-                           placeholder="Tìm kiếm sản phẩm...">
+                    <input type="text" class="form-control" name="search"
+                        value="<?= htmlspecialchars($search) ?>"
+                        placeholder="Tìm kiếm sản phẩm...">
                 </div>
                 <div class="col-md-4">
                     <select class="form-select" name="category">
                         <option value="0">Tất cả danh mục</option>
                         <?php foreach ($categories as $category): ?>
-                            <option value="<?= $category['id'] ?>" 
-                                    <?= $category_id == $category['id'] ? 'selected' : '' ?>>
+                            <option value="<?= $category['id'] ?>"
+                                <?= $category_id == $category['id'] ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($category['name']) ?>
                             </option>
                         <?php endforeach; ?>
@@ -425,15 +464,15 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                 <?php foreach ($products as $product): ?>
                     <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                         <div class="card product-card h-100">
-                            <img src="<?= $product['image_url'] ?: 'images/no-image.jpg' ?>" 
-                                 class="card-img-top" alt="<?= htmlspecialchars($product['name']) ?>"
-                                 style="height: 200px; object-fit: cover;">
-                            
+                            <img src="<?= $product['image_url'] ?: 'images/no-image.jpg' ?>"
+                                class="card-img-top" alt="<?= htmlspecialchars($product['name']) ?>"
+                                style="height: 200px; object-fit: cover;">
+
                             <div class="card-body d-flex flex-column">
                                 <h6 class="card-title"><?= htmlspecialchars($product['name']) ?></h6>
                                 <p class="text-muted small">Mã: <?= htmlspecialchars($product['code']) ?></p>
                                 <p class="text-muted small mb-2"><?= htmlspecialchars($product['category_name']) ?></p>
-                                
+
                                 <div class="mt-auto">
                                     <div class="price-section mb-3">
                                         <?php if ($product['sale_price']): ?>
@@ -443,14 +482,14 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                                             <span class="h6 text-primary"><?= formatPrice($product['price']) ?></span>
                                         <?php endif; ?>
                                     </div>
-                                    
+
                                     <div class="d-grid gap-2">
-                                        <a href="product_detail.php?id=<?= $product['id'] ?>" 
-                                           class="btn btn-outline-primary btn-sm">Xem chi tiết</a>
-                                        
+                                        <a href="product_detail.php?id=<?= $product['id'] ?>"
+                                            class="btn btn-outline-primary btn-sm">Xem chi tiết</a>
+
                                         <?php if (isLoggedIn()): ?>
-                                            <button class="btn btn-primary btn-sm add-to-cart" 
-                                                    data-product-id="<?= $product['id'] ?>">
+                                            <button class="btn btn-primary btn-sm add-to-cart"
+                                                data-product-id="<?= $product['id'] ?>">
                                                 <i class="fas fa-cart-plus"></i> Thêm vào giỏ
                                             </button>
                                         <?php else: ?>
@@ -541,7 +580,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                         <i class="fas fa-envelope"></i> Email: blabla@gmail.com
                     </div>
                     <div style="font-size: 13px; color: #bbb; margin-top: 18px;">
-                        © 2023 SportWear Shop. Bảo lưu mọi quyền. Thiết kế bởi SportWear Shop
+                        © 2025 Phòng Khám Đa Khoa Ánh Sáng. Bảo lưu mọi quyền.
                     </div>
                 </div>
                 <!-- Chính sách -->
@@ -601,30 +640,31 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
         document.querySelectorAll('.add-to-cart').forEach(button => {
             button.addEventListener('click', function() {
                 const productId = this.dataset.productId;
-                
+
                 fetch('add_to_cart.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `product_id=${productId}&quantity=1`
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Đã thêm sản phẩm vào giỏ hàng!');
-                    } else {
-                        alert('Có lỗi xảy ra: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!');
-                });
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `product_id=${productId}&quantity=1`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Đã thêm sản phẩm vào danh sách đăng ký!');
+                        } else {
+                            alert('Có lỗi xảy ra: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Có lỗi xảy ra khi thêm sản phẩm vào danh sách đăng ký!');
+                    });
             });
         });
     </script>
 
-   
+
 </body>
+
 </html>
