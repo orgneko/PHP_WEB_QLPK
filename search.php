@@ -26,7 +26,7 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
     $search_results = $stmt->fetchAll();
 }
 
-// Lấy danh sách loại sản phẩm cho filter
+// Lấy danh sách loại Dịch vụ cho filter
 $categories_sql = "SELECT * FROM categories";
 $categories_stmt = $pdo->query($categories_sql);
 $categories = $categories_stmt->fetchAll();
@@ -37,7 +37,7 @@ $categories = $categories_stmt->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tìm kiếm sản phẩm - SportShop</title>
+    <title>Tìm kiếm Dịch vụ - SportShop</title>
     <style>
         * {
             margin: 0;
@@ -213,17 +213,17 @@ $categories = $categories_stmt->fetchAll();
         <a href="index.php" class="back-link">← Quay lại trang chủ</a>
         
         <div class="search-form">
-            <h2>Tìm kiếm sản phẩm</h2>
+            <h2>Tìm kiếm Dịch vụ</h2>
             <form method="GET" action="search.php">
                 <input type="text" name="search" class="search-input" 
-                       placeholder="Nhập tên sản phẩm, mã sản phẩm, màu sắc, size..." 
+                       placeholder="Nhập tên Dịch vụ, mã Dịch vụ, màu sắc, size..." 
                        value="<?php echo htmlspecialchars($search_query); ?>">
                 <button type="submit" class="search-btn">Tìm kiếm</button>
             </form>
             
             <div class="filter-section">
                 <div class="filter-group">
-                    <label>Loại sản phẩm:</label>
+                    <label>Loại Dịch vụ:</label>
                     <select name="category" id="category">
                         <option value="">Tất cả</option>
                         <?php foreach ($categories as $category): ?>
@@ -260,7 +260,7 @@ $categories = $categories_stmt->fetchAll();
         <?php if (!empty($search_query)): ?>
             <div class="results-header">
                 <h3>Kết quả tìm kiếm cho: "<?php echo htmlspecialchars($search_query); ?>"</h3>
-                <p>Tìm thấy <?php echo count($search_results); ?> sản phẩm</p>
+                <p>Tìm thấy <?php echo count($search_results); ?> Dịch vụ</p>
             </div>
         <?php endif; ?>
         
@@ -280,14 +280,14 @@ $categories = $categories_stmt->fetchAll();
                                 Loại: <?php echo htmlspecialchars($product['ten_loai']); ?><br>
                                 Màu: <?php echo htmlspecialchars($product['mau_sac']); ?><br>
                                 Size: <?php echo htmlspecialchars($product['size']); ?><br>
-                                Còn lại: <?php echo $product['so_luong']; ?> sản phẩm
+                                Còn lại: <?php echo $product['so_luong']; ?> Dịch vụ
                             </div>
                             
                             <?php if ($product['so_luong'] > 0): ?>
                                 <form method="POST" action="add_to_cart.php">
                                     <input type="hidden" name="product_id" value="<?php echo $product['id_san_pham']; ?>">
                                     <input type="hidden" name="quantity" value="1">
-                                    <button type="submit" class="add-to-cart">Thêm vào giỏ hàng</button>
+                                    <button type="submit" class="add-to-cart">Đăng ký khám hàng</button>
                                 </form>
                             <?php else: ?>
                                 <button class="add-to-cart" style="background-color: #6c757d;" disabled>Hết hàng</button>
@@ -298,7 +298,7 @@ $categories = $categories_stmt->fetchAll();
             </div>
         <?php elseif (!empty($search_query)): ?>
             <div class="no-results">
-                <h3>Không tìm thấy sản phẩm nào</h3>
+                <h3>Không tìm thấy Dịch vụ nào</h3>
                 <p>Vui lòng thử lại với từ khóa khác hoặc kiểm tra chính tả</p>
             </div>
         <?php endif; ?>

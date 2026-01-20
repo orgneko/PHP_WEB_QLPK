@@ -2,7 +2,7 @@
 session_start();
 require_once '../config.php';
 
-// Tổng sản phẩm
+// Tổng Dịch vụ
 $total_products = $pdo->query("SELECT COUNT(*) FROM products")->fetchColumn();
 
 // Đơn hàng hôm nay
@@ -12,7 +12,7 @@ $today_orders = $pdo->query("SELECT COUNT(*) FROM orders WHERE DATE(created_at) 
 $this_month = date('Y-m');
 $month_revenue = $pdo->query("SELECT SUM(total_amount) FROM orders WHERE status='completed' AND DATE_FORMAT(created_at, '%Y-%m') = '$this_month'")->fetchColumn();
 
-// Sản phẩm sắp hết (tồn kho <= 10)
+// Dịch vụ sắp hết (tồn kho <= 10)
 $low_stock = $pdo->query("SELECT COUNT(*) FROM products WHERE stock_quantity <= 10")->fetchColumn();
 
 // Dữ liệu doanh thu 6 tháng gần nhất cho biểu đồ
@@ -31,7 +31,7 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Shop Quần Áo Thể Thao</title>
+    <title>Admin - Phòng Khám Đa Khoa BHH Thể Thao</title>
     <style>
         * {
             margin: 0;
@@ -385,8 +385,8 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
             <h2>🏃‍♂️ SportShop Admin</h2>
             <ul>
                 <li><a href="index.php" class="active">📊 Dashboard</a></li>
-                <li><a href="products.php">👕 Quản lý sản phẩm</a></li>
-                <li><a href="categories.php">📂 Loại sản phẩm</a></li>
+                <li><a href="products.php">👕 Quản lý Dịch vụ</a></li>
+                <li><a href="categories.php">📂 Loại Dịch vụ</a></li>
                 <li><a href="suppliers.php">🏢 Nhà cung cấp</a></li>
                 <li><a href="inventory.php">📦 Tồn kho</a></li>
                 <li><a href="orders.php">🛒 Đơn hàng</a></li>
@@ -413,7 +413,7 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
                 <div class="stats-grid">
                     <div class="stat-card">
                         <h3><?= $total_products ?></h3>
-                        <p>Tổng sản phẩm</p>
+                        <p>Tổng Dịch vụ</p>
                     </div>
                     <div class="stat-card">
                         <h3><?= $today_orders ?></h3>
@@ -425,7 +425,7 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
                     </div>
                     <div class="stat-card">
                         <h3><?= $low_stock ?></h3>
-                        <p>Sản phẩm sắp hết</p>
+                        <p>Dịch vụ sắp hết</p>
                     </div>
                 </div>
 
@@ -435,9 +435,9 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
                         <canvas id="revenueChart" height="120"></canvas>
                     </div>
                     <div class="chart-container">
-                        <h3>Sản phẩm bán chạy</h3>
+                        <h3>Dịch vụ bán chạy</h3>
                         <div style="padding: 20px; text-align: center;">
-                            <p>📊 Biểu đồ thống kê sản phẩm bán chạy</p>
+                            <p>📊 Biểu đồ thống kê Dịch vụ bán chạy</p>
                         </div>
                     </div>
                 </div>
@@ -446,14 +446,14 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
             <!-- Products Section -->
             <div id="products" class="content-section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2>Quản lý sản phẩm</h2>
-                    <button class="btn btn-primary" onclick="openModal('add-product')">+ Thêm sản phẩm</button>
+                    <h2>Quản lý Dịch vụ</h2>
+                    <button class="btn btn-primary" onclick="openModal('add-product')">+ Thêm Dịch vụ</button>
                 </div>
 
                 <div class="search-filter">
-                    <input type="text" placeholder="Tìm kiếm sản phẩm..." id="searchProduct">
+                    <input type="text" placeholder="Tìm kiếm Dịch vụ..." id="searchProduct">
                     <select>
-                        <option value="">Tất cả danh mục</option>
+                        <option value="">Tất cả Chuyên khoa</option>
                         <option value="ao-thun">Áo thun</option>
                         <option value="quan-short">Quần short</option>
                         <option value="giay">Giày</option>
@@ -465,8 +465,8 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
                     <thead>
                         <tr>
                             <th>Hình ảnh</th>
-                            <th>Tên sản phẩm</th>
-                            <th>Danh mục</th>
+                            <th>Tên Dịch vụ</th>
+                            <th>Chuyên khoa</th>
                             <th>Giá</th>
                             <th>Tồn kho</th>
                             <th>Khuyến mãi</th>
@@ -476,7 +476,7 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
                     </thead>
                     <tbody>
                         <tr>
-                            <td><img src="https://via.placeholder.com/60x60" alt="Sản phẩm" class="product-image"></td>
+                            <td><img src="https://via.placeholder.com/60x60" alt="Dịch vụ" class="product-image"></td>
                             <td>Áo thun Nike Dri-FIT</td>
                             <td>Áo thun</td>
                             <td>590,000 VNĐ</td>
@@ -489,7 +489,7 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
                             </td>
                         </tr>
                         <tr>
-                            <td><img src="https://via.placeholder.com/60x60" alt="Sản phẩm" class="product-image"></td>
+                            <td><img src="https://via.placeholder.com/60x60" alt="Dịch vụ" class="product-image"></td>
                             <td>Quần short Adidas</td>
                             <td>Quần short</td>
                             <td>450,000 VNĐ</td>
@@ -502,7 +502,7 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
                             </td>
                         </tr>
                         <tr>
-                            <td><img src="https://via.placeholder.com/60x60" alt="Sản phẩm" class="product-image"></td>
+                            <td><img src="https://via.placeholder.com/60x60" alt="Dịch vụ" class="product-image"></td>
                             <td>Giày chạy bộ Puma</td>
                             <td>Giày</td>
                             <td>1,200,000 VNĐ</td>
@@ -521,9 +521,9 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
             <!-- Categories Section -->
             <div id="categories" class="content-section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2>Quản lý loại sản phẩm</h2>
+                    <h2>Quản lý loại Dịch vụ</h2>
                     <a href="../index.php" class="btn btn-secondary" style="margin-bottom:15px;">Về trang chủ</a>
-                    <button class="btn btn-primary" onclick="openModal('add-category')">+ Thêm loại sản phẩm</button>
+                    <button class="btn btn-primary" onclick="openModal('add-category')">+ Thêm loại Dịch vụ</button>
                 </div>
 
                 <table class="data-table">
@@ -532,7 +532,7 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
                             <th>ID</th>
                             <th>Tên loại</th>
                             <th>Mô tả</th>
-                            <th>Số sản phẩm</th>
+                            <th>Số Dịch vụ</th>
                             <th>Thao tác</th>
                         </tr>
                     </thead>
@@ -587,7 +587,7 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
                             <th>Địa chỉ</th>
                             <th>Điện thoại</th>
                             <th>Email</th>
-                            <th>Số sản phẩm</th>
+                            <th>Số Dịch vụ</th>
                             <th>Thao tác</th>
                         </tr>
                     </thead>
@@ -639,7 +639,7 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
                 
                 <div class="search-filter">
                     <select>
-                        <option value="">Tất cả sản phẩm</option>
+                        <option value="">Tất cả Dịch vụ</option>
                         <option value="low">Sắp hết hàng (&lt;10)</option>
                         <option value="medium">Trung bình (10-50)</option>
                         <option value="high">Nhiều (&gt;50)</option>
@@ -650,8 +650,8 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Tên sản phẩm</th>
-                            <th>Danh mục</th>
+                            <th>Tên Dịch vụ</th>
+                            <th>Chuyên khoa</th>
                             <th>Số lượng tồn</th>
                             <th>Giá trị tồn kho</th>
                             <th>Trạng thái</th>
@@ -779,22 +779,22 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
                     </div>
                     
                     <div class="chart-container">
-                        <h3>Sản phẩm bán chạy</h3>
+                        <h3>Dịch vụ bán chạy</h3>
                         <div style="padding: 20px;">
-                            <p>1. Áo thun Nike Dri-FIT - 145 sản phẩm</p>
-                            <p>2. Quần short Adidas - 89 sản phẩm</p>
-                            <p>3. Giày chạy bộ Puma - 67 sản phẩm</p>
+                            <p>1. Áo thun Nike Dri-FIT - 145 Dịch vụ</p>
+                            <p>2. Quần short Adidas - 89 Dịch vụ</p>
+                            <p>3. Giày chạy bộ Puma - 67 Dịch vụ</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="grid-2">
                     <div class="chart-container">
-                        <h3>Sản phẩm bán chậm</h3>
+                        <h3>Dịch vụ bán chậm</h3>
                         <div style="padding: 20px;">
-                            <p>1. Áo khoác Nike - 12 sản phẩm</p>
-                            <p>2. Quần dài Adidas - 8 sản phẩm</p>
-                            <p>3. Giày đá bóng Puma - 5 sản phẩm</p>
+                            <p>1. Áo khoác Nike - 12 Dịch vụ</p>
+                            <p>2. Quần dài Adidas - 8 Dịch vụ</p>
+                            <p>3. Giày đá bóng Puma - 5 Dịch vụ</p>
                         </div>
                     </div>
                     
@@ -818,7 +818,7 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
                 <div class="search-filter">
                     <input type="text" placeholder="Tìm kiếm khuyến mãi...">
                     <select>
-                        <option value="">Tất cả sản phẩm</option>
+                        <option value="">Tất cả Dịch vụ</option>
                         <option value="ao-thun">Áo thun</option>
                         <option value="quan-short">Quần short</option>
                         <option value="giay">Giày</option>
@@ -831,7 +831,7 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
                         <tr>
                             <th>ID</th>
                             <th>Tên khuyến mãi</th>
-                            <th>Sản phẩm áp dụng</th>
+                            <th>Dịch vụ áp dụng</th>
                             <th>Giá trị</th>
                             <th>Ngày bắt đầu</th>
                             <th>Ngày kết thúc</th>
@@ -979,14 +979,14 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
     <div class="modal" id="add-product">
         <div class="modal-content">
             <span class="close" onclick="closeModal('add-product')">&times;</span>
-            <h2>Thêm sản phẩm mới</h2>
+            <h2>Thêm Dịch vụ mới</h2>
             <form action="#" method="POST">
                 <div class="form-group">
-                    <label for="productName">Tên sản phẩm</label>
+                    <label for="productName">Tên Dịch vụ</label>
                     <input type="text" id="productName" name="productName" required>
                 </div>
                 <div class="form-group">
-                    <label for="productCategory">Danh mục</label>
+                    <label for="productCategory">Chuyên khoa</label>
                     <select id="productCategory" name="productCategory" required>
                         <option value="ao-thun">Áo thun</option>
                         <option value="quan-short">Quần short</option>
@@ -1005,7 +1005,7 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
                     <label for="productDiscount">Khuyến mãi</label>
                     <input type="text" id="productDiscount" name="productDiscount">
                 </div>
-                <button type="submit" class="btn btn-primary">Thêm sản phẩm</button>
+                <button type="submit" class="btn btn-primary">Thêm Dịch vụ</button>
             </form>
         </div>
     </div>
@@ -1013,14 +1013,14 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
     <div class="modal" id="edit-product">
         <div class="modal-content">
             <span class="close" onclick="closeModal('edit-product')">&times;</span>
-            <h2>Sửa sản phẩm</h2>
+            <h2>Sửa Dịch vụ</h2>
             <form action="#" method="POST">
                 <div class="form-group">
-                    <label for="editProductName">Tên sản phẩm</label>
+                    <label for="editProductName">Tên Dịch vụ</label>
                     <input type="text" id="editProductName" name="editProductName" value="Áo thun Nike Dri-FIT" required>
                 </div>
                 <div class="form-group">
-                    <label for="editProductCategory">Danh mục</label>
+                    <label for="editProductCategory">Chuyên khoa</label>
                     <select id="editProductCategory" name="editProductCategory" required>
                         <option value="ao-thun" selected>Áo thun</option>
                         <option value="quan-short">Quần short</option>
@@ -1039,7 +1039,7 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
                     <label for="editProductDiscount">Khuyến mãi</label>
                     <input type="text" id="editProductDiscount" name="editProductDiscount" value="10%">
                 </div>
-                <button type="submit" class="btn btn-primary">Cập nhật sản phẩm</button>
+                <button type="submit" class="btn btn-primary">Cập nhật Dịch vụ</button>
             </form>
         </div>
     </div>
@@ -1047,17 +1047,17 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
     <div class="modal" id="add-category">
         <div class="modal-content">
             <span class="close" onclick="closeModal('add-category')">&times;</span>
-            <h2>Thêm loại sản phẩm mới</h2>
+            <h2>Thêm loại Dịch vụ mới</h2>
             <form action="#" method="POST">
                 <div class="form-group">
-                    <label for="categoryName">Tên loại sản phẩm</label>
+                    <label for="categoryName">Tên loại Dịch vụ</label>
                     <input type="text" id="categoryName" name="categoryName" required>
                 </div>
                 <div class="form-group">
                     <label for="categoryDescription">Mô tả</label>
                     <textarea id="categoryDescription" name="categoryDescription" rows="3" required></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Thêm loại sản phẩm</button>
+                <button type="submit" class="btn btn-primary">Thêm loại Dịch vụ</button>
             </form>
         </div>
     </div>
@@ -1065,17 +1065,17 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
     <div class="modal" id="edit-category">
         <div class="modal-content">
             <span class="close" onclick="closeModal('edit-category')">&times;</span>
-            <h2>Sửa loại sản phẩm</h2>
+            <h2>Sửa loại Dịch vụ</h2>
             <form action="#" method="POST">
                 <div class="form-group">
-                    <label for="editCategoryName">Tên loại sản phẩm</label>
+                    <label for="editCategoryName">Tên loại Dịch vụ</label>
                     <input type="text" id="editCategoryName" name="editCategoryName" value="Áo thun" required>
                 </div>
                 <div class="form-group">
                     <label for="editCategoryDescription">Mô tả</label>
                     <textarea id="editCategoryDescription" name="editCategoryDescription" rows="3" required>Áo thun thể thao nam, nữ</textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Cập nhật loại sản phẩm</button>
+                <button type="submit" class="btn btn-primary">Cập nhật loại Dịch vụ</button>
             </form>
         </div>
     </div>
@@ -1142,7 +1142,7 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
                     <input type="text" id="promotionName" name="promotionName" required>
                 </div>
                 <div class="form-group">
-                    <label for="appliedProduct">Sản phẩm áp dụng</label>
+                    <label for="appliedProduct">Dịch vụ áp dụng</label>
                     <select id="appliedProduct" name="appliedProduct" required>
                         <option value="ao-thun">Áo thun Nike Dri-FIT</option>
                         <option value="quan-short">Quần short Adidas</option>
@@ -1176,7 +1176,7 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
                     <input type="text" id="editPromotionName" name="editPromotionName" value="Giảm giá mùa hè" required>
                 </div>
                 <div class="form-group">
-                    <label for="editAppliedProduct">Sản phẩm áp dụng</label>
+                    <label for="editAppliedProduct">Dịch vụ áp dụng</label>
                     <select id="editAppliedProduct" name="editAppliedProduct" required>
                         <option value="ao-thun" selected>Áo thun Nike Dri-FIT</option>
                         <option value="quan-short">Quần short Adidas</option>
@@ -1301,9 +1301,9 @@ $revenue_chart = array_reverse($revenue_chart); // Để tháng cũ lên trướ
         }
 
         function deleteProduct(productId) {
-            if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
-                // Thực hiện xóa sản phẩm
-                alert('Sản phẩm đã được xóa.');
+            if (confirm('Bạn có chắc chắn muốn xóa Dịch vụ này?')) {
+                // Thực hiện xóa Dịch vụ
+                alert('Dịch vụ đã được xóa.');
             }
         }
     </script>

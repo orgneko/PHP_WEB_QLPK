@@ -1,7 +1,7 @@
 <?php
 require_once 'config.php';
 
-// Lấy danh sách sản phẩm
+// Lấy danh sách Dịch vụ
 $search = isset($_GET['search']) ? sanitizeInput($_GET['search']) : '';
 $category_id = isset($_GET['category']) ? (int)$_GET['category'] : 0;
 
@@ -28,254 +28,27 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $products = $stmt->fetchAll();
 
-// Lấy danh sách danh mục
+// Lấy danh sách Chuyên khoa
 $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
 ?>
 
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phòng Khám Đa Khoa Ánh Sáng</title>
+    <title>PHÒNG KHÁM BHH - Đặt lịch khám thông minh</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
-            background: #f6f8fa;
-            color: #222;
-        }
-
-        .navbar {
-            background: linear-gradient(90deg, #007bff 0%, #43cea2 100%) !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
-        }
-
-        .navbar-brand {
-            font-weight: bold;
-            font-size: 28px;
-            color: #ffe600 !important;
-            letter-spacing: 1px;
-        }
-
-        .navbar-nav .nav-link {
-            color: #fff !important;
-            font-size: 16px;
-            font-weight: 500;
-            margin: 0 8px;
-            transition: color 0.2s;
-        }
-
-        .navbar-nav .nav-link.text-warning {
-            color: #ffe600 !important;
-            font-weight: bold;
-        }
-
-        .navbar-nav .nav-link:hover,
-        .navbar-nav .nav-link.active {
-            color: #43cea2 !important;
-        }
-
-        .navbar-toggler {
-            border: none;
-        }
-
-        .banner-carousel {
-            background: #232323;
-        }
-
-        .carousel-inner {
-            min-height: 420px;
-            border-radius: 0 0 24px 24px;
-            overflow: hidden;
-        }
-
-        .carousel-item {
-            position: relative;
-        }
-
-        .carousel-control-prev-icon,
-        .carousel-control-next-icon {
-            background-color: #ffe600;
-            border-radius: 50%;
-        }
-
-        .category-filter {
-            background: #fff;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 32px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .product-card {
-            border: none;
-            border-radius: 14px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s, box-shadow 0.3s;
-            background: #fff;
-        }
-
-        .product-card:hover {
-            transform: translateY(-7px) scale(1.03);
-            box-shadow: 0 8px 24px rgba(67, 206, 162, 0.13);
-        }
-
-        .card-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #232323;
-        }
-
-        .price-original {
-            text-decoration: line-through;
-            color: #6c757d;
-            font-size: 15px;
-        }
-
-        .price-sale {
-            color: #dc3545;
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .btn-outline-primary {
-            border-radius: 6px;
-            font-weight: 500;
-        }
-
-        .btn-primary,
-        .btn-outline-primary:active {
-            background: linear-gradient(90deg, #007bff 0%, #43cea2 100%);
-            border: none;
-            font-weight: 600;
-            border-radius: 6px;
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(90deg, #43cea2 0%, #007bff 100%);
-        }
-
-        .footer {
-            background: #232323;
-            color: #fff;
-            padding: 48px 0 0 0;
-            font-family: 'Roboto', Arial, sans-serif;
-            margin-top: 48px;
-        }
-
-        .footer h5 {
-            color: #ffe600;
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 18px;
-            letter-spacing: 0.5px;
-        }
-
-        .footer a {
-            color: #fff;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .footer a:hover {
-            color: #43cea2;
-            text-decoration: underline;
-        }
-
-        .footer .social-icons a {
-            font-size: 22px;
-            margin-right: 14px;
-            color: #fff;
-            transition: color 0.2s;
-        }
-
-        .footer .social-icons a:hover {
-            color: #ffe600;
-        }
-
-        .footer .footer-bottom {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            margin-top: 30px;
-            padding-bottom: 18px;
-        }
-
-        .footer .footer-bottom button {
-            background: #002b5c;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            padding: 8px 18px;
-            font-weight: bold;
-            font-size: 15px;
-        }
-
-        @media (max-width: 991px) {
-            .navbar-nav.mx-auto {
-                margin-left: 0 !important;
-                margin-right: 0 !important;
-            }
-
-            .footer .container {
-                flex-direction: column;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .category-filter {
-                padding: 12px;
-            }
-
-            .footer {
-                padding: 24px 0 0 0;
-            }
-
-            .carousel-inner {
-                min-height: 220px;
-            }
-        }
-
-        .banner-carousel .banner-title {
-            font-size: 48px;
-            font-weight: bold;
-            color: #ffe600;
-            text-align: center;
-            margin-top: 80px;
-            text-shadow: 2px 2px 8px #232323;
-        }
-
-        .banner-carousel .banner-sub {
-            font-size: 28px;
-            color: #fff;
-            text-align: center;
-            margin-bottom: 32px;
-        }
-
-        .banner-carousel .banner-btn {
-            display: block;
-            margin: 32px auto 0 auto;
-            font-size: 22px;
-            font-weight: bold;
-            background: #fff;
-            color: #232323;
-            border: none;
-            border-radius: 30px;
-            padding: 10px 32px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
+    
 </head>
-
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(90deg, #007bff 0%, #43cea2 100%);">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="index.php" style="font-weight: bold; font-size: 28px; color: #ffe600;">
-                Đa Khoa Ánh Sáng
+                Phòng Khám Thông Minh BHH
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -286,21 +59,21 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                         <a class="nav-link text-white" href="index.php">Trang chủ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="products.php">Các gói khám bệnh</a>
+                        <a class="nav-link text-white" href="">Đặt lịch khám</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="news.php">Tin tức và khuyến mãi</a>
+                        <a class="nav-link text-white" href="">Hướng dẫn</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="contact.php">Liên hệ</a>
+                        <a class="nav-link text-white" href="">Liên hệ</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item me-2">
-                        <form class="d-flex" method="GET" action="products.php">
-                            <input class="form-control form-control-sm me-2" type="search" name="search" placeholder="Tìm sản phẩm..." aria-label="Search">
+                        <!-- <form class="d-flex" method="GET" action="products.php">
+                            <input class="form-control form-control-sm me-2" type="search" name="search" placeholder="Tìm Dịch vụ..." aria-label="Search">
                             <button class="btn btn-outline-light btn-sm" type="submit"><i class="fas fa-search"></i></button>
-                        </form>
+                        </form> -->
                     </li>
                     <?php if (isLoggedIn()): ?>
                         <li class="nav-item">
@@ -338,13 +111,13 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
         </div>
     </nav>
 
-
+    
     <div class="banner-carousel">
-        <div class="carousel-inner" style="min-height: 420px;">
+        <div class="carousel-inner" style="min-height: 560px;">
             <div class="carousel-item active">
                 <div style="
-                    min-height: 420px;
-                    background: url('https://bizweb.dktcdn.net/100/340/361/themes/913887/assets/slider_3.jpg?1753158264387') center/cover no-repeat;
+                    min-height: 560px;
+                    background: url('sources/anh2.png') center 25%/cover no-repeat;
                     display: flex;
                     flex-direction: column;
                     align-items: center;
@@ -352,7 +125,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                     position: relative;
                 ">
                     <div class="banner-title" style="color: #ffe600; text-shadow: 2px 2px 8px #232323;">
-                        Khám Phá Bộ Sưu Tập Mới Nhất
+                        Khám Phá Dịch Vụ Mới Nhất
                     </div>
                     <button class="banner-btn" style="margin-top: 32px;" onclick="window.location.href='products.php'">XEM NGAY</button>
                 </div>
@@ -360,86 +133,69 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
         </div>
     </div>
 
-    <!-- Bộ sưu tập dưới banner -->
-    <div class="container" style="margin-top: 40px; margin-bottom: 40px;">
-        <h2 style="text-align: center; font-weight: 600; letter-spacing: 2px; margin-bottom: 18px;">BỘ SƯU TẬP</h2>
-        <div style="width: 80px; height: 3px; background: #232323; margin: 0 auto 32px auto; border-radius: 2px;"></div>
-        <div class="row g-4 justify-content-center">
-            <!-- Bộ sưu tập 1: Áo thể thao nam -->
-            <div class="col-12 col-sm-6 col-md-3">
-                <a href="products.php?category=1" style="text-decoration: none; color: inherit;">
-                    <div style="position: relative; overflow: hidden; border-radius: 12px;">
-                        <img src="https://bizweb.dktcdn.net/thumb/large/100/340/361/products/ao-thun-terrex-xperior-climacool-trang-jn8134-hm30.jpg?v=1745035366060" alt="Áo thể thao nam" style="width: 100%; aspect-ratio: 1/1; object-fit: cover;">
-                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-                            background: rgba(0,0,0,0.18); display: flex; align-items: center; justify-content: center;">
-                            <span style="color: #fff; font-size: 2rem; font-weight: 600; text-align: center; letter-spacing: 1px; text-shadow: 1px 1px 8px #232323;">
-                                ÁO THỂ THAO NAM
-                            </span>
-                        </div>
-                    </div>
-                </a>
+    <div class="container py-5">
+    <div class="row text-center">
+        <div class="col-12 mb-4">
+            <h3 style="color: #103095; font-weight: bold;">Tại sao chọn Phòng Khám BHH?</h3>
+            <p class="text-muted">Mang lại giải pháp chăm sóc sức khỏe toàn diện và tin cậy nhất</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="feature-box p-4 h-100">
+                <div class="icon-circle mb-3">
+                    <i class="fas fa-user-md fa-2x text-white"></i>
+                </div>
+                <h5 class="font-weight-bold mb-3">Đội ngũ chuyên gia</h5>
+                <p class="text-muted">
+                    Quy tụ các bác sĩ đầu ngành, giàu kinh nghiệm từ các bệnh viện lớn, tận tâm với người bệnh.
+                </p>
             </div>
-            <!-- Bộ sưu tập 2: Quần thể thao nam -->
-            <div class="col-12 col-sm-6 col-md-3">
-                <a href="products.php?category=2" style="text-decoration: none; color: inherit;">
-                    <div style="position: relative; overflow: hidden; border-radius: 12px;">
-                        <img src="https://kingmensport.vn/wp-content/uploads/2021/06/27-768x768.jpg" alt="Quần thể thao nam" style="width: 100%; aspect-ratio: 1/1; object-fit: cover;">
-                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-                            background: rgba(0,0,0,0.18); display: flex; align-items: center; justify-content: center;">
-                            <span style="color: #fff; font-size: 2rem; font-weight: 600; text-align: center; letter-spacing: 1px; text-shadow: 1px 1px 8px #232323;">
-                                QUẦN THỂ THAO NAM
-                            </span>
-                        </div>
-                    </div>
-                </a>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="feature-box p-4 h-100">
+                <div class="icon-circle mb-3">
+                    <i class="fas fa-microscope fa-2x text-white"></i>
+                </div>
+                <h5 class="font-weight-bold mb-3">Trang thiết bị hiện đại</h5>
+                <p class="text-muted">
+                    Hệ thống máy móc nhập khẩu 100% từ Đức và Mỹ, đảm bảo kết quả chẩn đoán chính xác nhất.
+                </p>
             </div>
-            <!-- Bộ sưu tập 3: Giày thể thao nam -->
-            <div class="col-12 col-sm-6 col-md-3">
-                <a href="products.php?category=3" style="text-decoration: none; color: inherit;">
-                    <div style="position: relative; overflow: hidden; border-radius: 12px;">
-                        <img src="https://kingmensport.vn/wp-content/uploads/2019/09/10-11-768x654.jpg" alt="Giày thể thao nam" style="width: 100%; aspect-ratio: 1/1; object-fit: cover;">
-                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-                            background: rgba(0,0,0,0.18); display: flex; align-items: center; justify-content: center;">
-                            <span style="color: #fff; font-size: 2rem; font-weight: 600; text-align: center; letter-spacing: 1px; text-shadow: 1px 1px 8px #232323;">
-                                GIÀY THỂ THAO NAM
-                            </span>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <!-- Bộ sưu tập 4: Giày bóng đá -->
-            <div class="col-12 col-sm-6 col-md-3">
-                <a href="products.php?category=5" style="text-decoration: none; color: inherit;">
-                    <div style="position: relative; overflow: hidden; border-radius: 12px;">
-                        <img src="https://kingmensport.vn/wp-content/uploads/2023/02/331131552_5933897656655855_510054232188727582_n-768x768.jpg" alt="Giày bóng đá" style="width: 100%; aspect-ratio: 1/1; object-fit: cover;">
-                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-                            background: rgba(0,0,0,0.18); display: flex; align-items: center; justify-content: center;">
-                            <span style="color: #fff; font-size: 2rem; font-weight: 600; text-align: center; letter-spacing: 1px; text-shadow: 1px 1px 8px #232323;">
-                                GIÀY BÓNG ĐÁ
-                            </span>
-                        </div>
-                    </div>
-                </a>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="feature-box p-4 h-100">
+                <div class="icon-circle mb-3">
+                    <i class="fas fa-clock fa-2x text-white"></i>
+                </div>
+                <h5 class="font-weight-bold mb-3">Hỗ trợ 24/7</h5>
+                <p class="text-muted">
+                    Đội ngũ chăm sóc khách hàng và cấp cứu luôn sẵn sàng hỗ trợ bạn bất kể ngày đêm.
+                </p>
             </div>
         </div>
     </div>
+</div>
 
     <!-- Main Content -->
     <div class="container mt-5">
         <!-- Search and Filter -->
-        <div class="category-filter">
+        <!-- <div class="category-filter">
             <form method="GET" class="row g-3">
                 <div class="col-md-4">
-                    <input type="text" class="form-control" name="search"
-                        value="<?= htmlspecialchars($search) ?>"
-                        placeholder="Tìm kiếm sản phẩm...">
+                    <input type="text" class="form-control" name="search" 
+                           value="<?= htmlspecialchars($search) ?>" 
+                           placeholder="Tìm kiếm Dịch vụ...">
                 </div>
                 <div class="col-md-4">
                     <select class="form-select" name="category">
-                        <option value="0">Tất cả danh mục</option>
+                        <option value="0">Tất cả Chuyên khoa</option>
                         <?php foreach ($categories as $category): ?>
-                            <option value="<?= $category['id'] ?>"
-                                <?= $category_id == $category['id'] ? 'selected' : '' ?>>
+                            <option value="<?= $category['id'] ?>" 
+                                    <?= $category_id == $category['id'] ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($category['name']) ?>
                             </option>
                         <?php endforeach; ?>
@@ -452,27 +208,27 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                     <a href="index.php" class="btn btn-outline-secondary">Reset</a>
                 </div>
             </form>
-        </div>
+        </div> -->
 
         <!-- Products Grid -->
-        <div class="row">
+        <!-- <div class="row">
             <?php if (empty($products)): ?>
                 <div class="col-12 text-center">
-                    <p class="lead text-muted">Không tìm thấy sản phẩm nào.</p>
+                    <p class="lead text-muted">Không tìm thấy Dịch vụ nào.</p>
                 </div>
             <?php else: ?>
                 <?php foreach ($products as $product): ?>
                     <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                         <div class="card product-card h-100">
-                            <img src="<?= $product['image_url'] ?: 'images/no-image.jpg' ?>"
-                                class="card-img-top" alt="<?= htmlspecialchars($product['name']) ?>"
-                                style="height: 200px; object-fit: cover;">
-
+                            <img src="<?= $product['image_url'] ?: 'images/no-image.jpg' ?>" 
+                                 class="card-img-top" alt="<?= htmlspecialchars($product['name']) ?>"
+                                 style="height: 200px; object-fit: cover;">
+                            
                             <div class="card-body d-flex flex-column">
                                 <h6 class="card-title"><?= htmlspecialchars($product['name']) ?></h6>
                                 <p class="text-muted small">Mã: <?= htmlspecialchars($product['code']) ?></p>
                                 <p class="text-muted small mb-2"><?= htmlspecialchars($product['category_name']) ?></p>
-
+                                
                                 <div class="mt-auto">
                                     <div class="price-section mb-3">
                                         <?php if ($product['sale_price']): ?>
@@ -482,15 +238,15 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                                             <span class="h6 text-primary"><?= formatPrice($product['price']) ?></span>
                                         <?php endif; ?>
                                     </div>
-
+                                    
                                     <div class="d-grid gap-2">
-                                        <a href="product_detail.php?id=<?= $product['id'] ?>"
-                                            class="btn btn-outline-primary btn-sm">Xem chi tiết</a>
-
+                                        <a href="product_detail.php?id=<?= $product['id'] ?>" 
+                                           class="btn btn-outline-primary btn-sm">Xem chi tiết</a>
+                                        
                                         <?php if (isLoggedIn()): ?>
-                                            <button class="btn btn-primary btn-sm add-to-cart"
-                                                data-product-id="<?= $product['id'] ?>">
-                                                <i class="fas fa-cart-plus"></i> Thêm vào giỏ
+                                            <button class="btn btn-primary btn-sm add-to-cart" 
+                                                    data-product-id="<?= $product['id'] ?>">
+                                                <i class="fas fa-cart-plus"></i> Đăng ký khám
                                             </button>
                                         <?php else: ?>
                                             <a href="login.php" class="btn btn-primary btn-sm">
@@ -505,64 +261,239 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                 <?php endforeach; ?>
             <?php endif; ?>
         </div>
+    </div> -->
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="container py-5" style="background-color: #F0F5FA;"> <h2 class="text-center mb-5" style="color: #103095; font-weight: bold;">Dịch vụ</h2>
+    
+    <div class="row">
+        <div class="col-lg-7 col-md-12">
+            <div class="row g-3"> <div class="col-md-4 col-4 mb-3">
+                    <div class="service-card active" onclick="changeService('thankinh', this)">
+                        <i class="fas fa-plus-square fa-2x mb-2"></i>
+                        <h6>Thần kinh</h6>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-4 mb-3">
+                    <div class="service-card" onclick="changeService('timmach', this)">
+                        <i class="fas fa-heartbeat fa-2x mb-2"></i>
+                        <h6>Tim mạch</h6>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-4 mb-3">
+                    <div class="service-card" onclick="changeService('chanthuong', this)">
+                        <i class="fas fa-stethoscope fa-2x mb-2"></i>
+                        <h6>Chấn thương<br>chỉnh hình</h6>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-4 mb-3">
+                    <div class="service-card" onclick="changeService('phauthuat', this)">
+                        <i class="fas fa-syringe fa-2x mb-2"></i>
+                        <h6>Phẫu thuật</h6>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-4 mb-3">
+                    <div class="service-card" onclick="changeService('nhakhoa', this)">
+                        <i class="fas fa-hospital fa-2x mb-2"></i>
+                        <h6>Nha khoa</h6>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-4 mb-3">
+                    <div class="service-card" onclick="changeService('chandoan', this)">
+                        <i class="fas fa-wave-square fa-2x mb-2"></i>
+                        <h6>Chẩn đoán hình<br>ảnh</h6>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-4 mb-3">
+                    <div class="service-card" onclick="changeService('tietnieu', this)">
+                        <i class="fas fa-clipboard-list fa-2x mb-2"></i>
+                        <h6>Tiết niệu</h6>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-4 mb-3">
+                    <div class="service-card" onclick="changeService('noikhoa', this)">
+                        <i class="fas fa-band-aid fa-2x mb-2"></i>
+                        <h6>Nội khoa</h6>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-4 mb-3">
+                    <div class="service-card" onclick="changeService('xemthem', this)">
+                        <i class="fas fa-briefcase-medical fa-2x mb-2"></i>
+                        <h6>Xem thêm</h6>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-lg-5 col-md-12">
+            <div id="service-detail-panel" class="p-4 h-100 d-flex flex-column justify-content-center">
+                <h3 class="text-primary font-weight-bold mb-4">Khoa Thần kinh</h3>
+                <ul class="list-unstyled text-secondary" style="line-height: 2.5;">
+                    <li><i class="fas fa-crosshairs text-primary mr-2 small"></i> Tư vấn chuyên khoa thần kinh</li>
+                    <li><i class="fas fa-crosshairs text-primary mr-2 small"></i> Chăm sóc toàn diện não bộ và thần kinh</li>
+                    <li><i class="fas fa-crosshairs text-primary mr-2 small"></i> Dịch vụ chẩn đoán hình ảnh tiên tiến</li>
+                    <li><i class="fas fa-crosshairs text-primary mr-2 small"></i> Điều trị động kinh và co giật</li>
+                    <li><i class="fas fa-crosshairs text-primary mr-2 small"></i> Đánh giá trí nhớ và nhận thức</li>
+                    <li><i class="fas fa-crosshairs text-primary mr-2 small"></i> Quản lý rối loạn vận động</li>
+                </ul>
+                <a href="booking.php" class="btn btn-primary rounded-pill mt-3 px-4 py-2 font-weight-bold" style="width: fit-content;">Đặt lịch khám ngay</a>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="container py-5">
+    <div class="text-center mb-5">
+        <h3 style="color: #103095; font-weight: bold;">Đội ngũ Chuyên gia</h3>
+        <p class="text-muted">Các bác sĩ đầu ngành, giàu kinh nghiệm và tận tâm</p>
     </div>
 
-    <!-- Tin tức và khuyến mại -->
-    <div class="container" style="margin-top: 40px; margin-bottom: 40px;">
+    <div class="row">
+        <div class="col-md-3 col-sm-6 mb-4">
+            <div class="doctor-card text-center p-4">
+                <img src="https://via.placeholder.com/150" alt="Bác sĩ A" class="doctor-img mb-3">
+                <h5 class="font-weight-bold text-dark mb-1">TS.BS Nguyễn Văn A</h5>
+                <p class="text-primary small mb-3">Khoa Thần kinh</p>
+                <button class="btn btn-outline-primary btn-sm rounded-pill px-3">Đặt lịch</button>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-4">
+            <div class="doctor-card text-center p-4">
+                <img src="https://via.placeholder.com/150" alt="Bác sĩ B" class="doctor-img mb-3">
+                <h5 class="font-weight-bold text-dark mb-1">ThS.BS Trần Thị B</h5>
+                <p class="text-primary small mb-3">Khoa Tim mạch</p>
+                <button class="btn btn-outline-primary btn-sm rounded-pill px-3">Đặt lịch</button>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-4">
+            <div class="doctor-card text-center p-4">
+                <img src="https://via.placeholder.com/150" alt="Bác sĩ C" class="doctor-img mb-3">
+                <h5 class="font-weight-bold text-dark mb-1">BSCKII Lê Văn C</h5>
+                <p class="text-primary small mb-3">Chấn thương chỉnh hình</p>
+                <button class="btn btn-outline-primary btn-sm rounded-pill px-3">Đặt lịch</button>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-4">
+            <div class="doctor-card text-center p-4">
+                <img src="https://via.placeholder.com/150" alt="Bác sĩ D" class="doctor-img mb-3">
+                <h5 class="font-weight-bold text-dark mb-1">BS Phạm Thị D</h5>
+                <p class="text-primary small mb-3">Nha khoa</p>
+                <button class="btn btn-outline-primary btn-sm rounded-pill px-3">Đặt lịch</button>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="py-5" style="background-color: #F0F5FA;">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 style="color: #103095; font-weight: bold;">Tin tức & Sự kiện</h3>
+            <a href="#" class="text-primary font-weight-bold">Xem tất cả <i class="fas fa-arrow-right ml-1"></i></a>
+        </div>
+
         <div class="row">
-            <!-- Tin tức -->
-            <div class="col-md-6 mb-4">
-                <div style="background: #232323; color: #fff; border-radius: 8px 8px 0 0; padding: 10px 18px; font-size: 1.3rem; font-weight: bold;">
-                    TIN TỨC
-                </div>
-                <div style="background: #fff; border-radius: 0 0 8px 8px; padding: 18px;">
-                    <div class="d-flex mb-3">
-                        <img src="https://bizweb.dktcdn.net/100/340/361/files/xx-07445.jpg?v=1743673474622" alt="Tin tức mới" style="width: 90px; height: 70px; object-fit: cover; border-radius: 6px; margin-right: 16px;">
-                        <div>
-                            <div style="font-weight: bold;"> UPDATE VỢT PICKLEBALL &amp; CẦU LÔNG - BỘ ĐÔI VỢT THỂ THAO ĐƯỢC MONG ĐỢI</div>
-                            <div style="font-size: 14px; color: #444;">Tin vui dành cho chính thức lên kệ các sản phẩm vợt thể thao Pickleball và Cầu lông...</div>
-                        </div>
-                    </div>
-                    <div class="d-flex mb-3">
-                        <img src="https://bizweb.dktcdn.net/100/340/361/articles/vn-11134208-7r98o-lwomew7p8us94d.jpg?v=1742544992490" alt="1990s sneaker" style="width: 90px; height: 70px; object-fit: cover; border-radius: 6px; margin-right: 16px;">
-                        <div>
-                            <div style="font-weight: bold;">“REPLY 1990s” CÙNG XU HƯỚNG SNEAKER DỄ MÓNG</div>
-                            <div style="font-size: 14px; color: #444;">Quay vòng thời trang, giày thể thao đế mỏng đã trở thành xu hướng lớn trong thị trường thời trang...</div>
-                        </div>
-                    </div>
-                    <div class="text-center">
-                        <a href="#" style="border: 1px solid #232323; border-radius: 8px; padding: 7px 22px; color: #232323; background: #fff; font-weight: 500; text-decoration: none; transition: background 0.2s;">Xem tất cả &gt;</a>
+            <div class="col-md-4 mb-4">
+                <div class="news-card bg-white h-100">
+                    <img src="https://via.placeholder.com/400x250" class="w-100" alt="Tin tuc 1">
+                    <div class="p-3">
+                        <small class="text-muted"><i class="far fa-calendar-alt mr-1"></i> 20/01/2026</small>
+                        <h5 class="mt-2 font-weight-bold text-dark">Dấu hiệu sớm của bệnh đột quỵ bạn cần biết</h5>
+                        <p class="text-muted small mt-2">Đột quỵ có thể xảy ra với bất kỳ ai. Hãy tìm hiểu các dấu hiệu nhận biết sớm...</p>
+                        <a href="#" class="text-primary font-weight-bold small">Đọc tiếp</a>
                     </div>
                 </div>
             </div>
-            <!-- Tin khuyến mại -->
-            <div class="col-md-6 mb-4">
-                <div style="background: #232323; color: #fff; border-radius: 8px 8px 0 0; padding: 10px 18px; font-size: 1.3rem; font-weight: bold;">
-                    TIN KHUYẾN MẠI
+
+            <div class="col-md-4 mb-4">
+                <div class="news-card bg-white h-100">
+                    <img src="https://via.placeholder.com/400x250" class="w-100" alt="Tin tuc 2">
+                    <div class="p-3">
+                        <small class="text-muted"><i class="far fa-calendar-alt mr-1"></i> 18/01/2026</small>
+                        <h5 class="mt-2 font-weight-bold text-dark">Lịch nghỉ tết Nguyên Đán 2026</h5>
+                        <p class="text-muted small mt-2">Phòng khám xin thông báo lịch nghỉ tết và lịch trực cấp cứu trong dịp lễ...</p>
+                        <a href="#" class="text-primary font-weight-bold small">Đọc tiếp</a>
+                    </div>
                 </div>
-                <div style="background: #fff; border-radius: 0 0 8px 8px; padding: 18px;">
-                    <div class="d-flex mb-3">
-                        <img src="https://bizweb.dktcdn.net/100/340/361/files/xx-07445.jpg?v=1743673474622" alt="Khuyến mại 800k" style="width: 90px; height: 70px; object-fit: cover; border-radius: 6px; margin-right: 16px;">
-                        <div>
-                            <div style="font-weight: bold;">MUA CÀNG NHIỀU HOÀN CÀNG LỚN TỚI 800K</div>
-                            <div style="font-size: 14px; color: #444;">&#128640; Hoàn ngay 500.000vnđ khi mua sắm với hoá đơn từ 2.500.000 - 3.500.000vnđ &#128640; Hoàn ngay 800.000 khi mua sắm với hoá...</div>
-                        </div>
-                    </div>
-                    <div class="d-flex mb-3">
-                        <img src="https://bizweb.dktcdn.net/100/340/361/files/xx-07445.jpg?v=1743673474622" alt="1050 sale" style="width: 90px; height: 70px; object-fit: cover; border-radius: 6px; margin-right: 16px;">
-                        <div>
-                            <div style="font-weight: bold;">🎉🎉🎉 TƯNG BỪNG KHAI TRƯƠNG </div>
-                            <div style="font-size: 14px; color: #444;">Dành riêng cho fan hàng hiệu ưu đãi độc quyền 🔥 SALE UP TO 50% tất cả các thương hiệu adidas,...</div>
-                        </div>
-                    </div>
-                    <div class="text-center">
-                        <a href="#" style="border: 1px solid #232323; border-radius: 8px; padding: 7px 22px; color: #232323; background: #fff; font-weight: 500; text-decoration: none; transition: background 0.2s;">Xem tất cả &gt;</a>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="news-card bg-white h-100">
+                    <img src="https://via.placeholder.com/400x250" class="w-100" alt="Tin tuc 3">
+                    <div class="p-3">
+                        <small class="text-muted"><i class="far fa-calendar-alt mr-1"></i> 15/01/2026</small>
+                        <h5 class="mt-2 font-weight-bold text-dark">Gói khám sức khỏe tổng quát ưu đãi 30%</h5>
+                        <p class="text-muted small mt-2">Chương trình tri ân khách hàng nhân dịp đầu năm mới với nhiều ưu đãi...</p>
+                        <a href="#" class="text-primary font-weight-bold small">Đọc tiếp</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</section>
+<button class="chat-toggle-btn" onclick="toggleChat()">
+    <i class="fas fa-comment-dots"></i>
+</button>
 
+<div id="chat-widget" class="chat-widget">
+    <div class="chat-header">
+        <div class="d-flex align-items-center">
+            <div class="chat-avatar mr-2">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div>
+                <h6 class="mb-0 font-weight-bold">Trợ lý ảo BHH</h6>
+                <small class="text-white-50">Hỗ trợ 24/7</small>
+            </div>
+        </div>
+        <span class="close-chat" onclick="toggleChat()">&times;</span>
+    </div>
+
+    <div class="chat-body" id="chat-body">
+        <div class="message bot-message">
+            Xin chào! Tôi là trợ lý ảo của phòng khám. Tôi có thể giúp gì cho bạn? 🏥
+        </div>
+        
+        <div class="chat-options mt-3">
+            <button class="option-btn" onclick="botReply('price')">💰 Bảng giá khám</button>
+            <button class="option-btn" onclick="botReply('address')">📍 Địa chỉ ở đâu?</button>
+            <button class="option-btn" onclick="botReply('book')">📅 Đặt lịch thế nào?</button>
+            <button class="option-btn" onclick="botReply('human')">👨‍⚕️ Gặp tư vấn viên</button>
+        </div>
+    </div>
+
+    <div class="chat-footer">
+        <input type="text" placeholder="Nhập tin nhắn..." disabled> <button><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
+<div id="consultation-modal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <h3 class="text-primary font-weight-bold text-center mb-4">Đăng ký tư vấn miễn phí</h3>
+        
+        <form>
+            <div class="form-group mb-3">
+                <input type="text" class="form-control" placeholder="Họ và tên của bạn" required>
+            </div>
+            <div class="form-group mb-3">
+                <input type="text" class="form-control" placeholder="Số điện thoại" required>
+            </div>
+            <div class="form-group mb-3">
+                <textarea class="form-control" rows="4" placeholder="Bạn cần tư vấn về vấn đề gì?"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block w-100 font-weight-bold">GỬI YÊU CẦU</button>
+        </form>
+    </div>
+</div>
     <!-- Footer -->
     <footer style="background: #232323; color: #fff; padding: 40px 0 0 0; font-family: Arial, sans-serif;">
         <div class="container" style="max-width: 1200px; margin: auto;">
@@ -580,7 +511,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                         <i class="fas fa-envelope"></i> Email: blabla@gmail.com
                     </div>
                     <div style="font-size: 13px; color: #bbb; margin-top: 18px;">
-                        © 2025 Phòng Khám Đa Khoa Ánh Sáng. Bảo lưu mọi quyền.
+                        © 2023 BHH.
                     </div>
                 </div>
                 <!-- Chính sách -->
@@ -634,37 +565,8 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Add to cart functionality
-        document.querySelectorAll('.add-to-cart').forEach(button => {
-            button.addEventListener('click', function() {
-                const productId = this.dataset.productId;
 
-                fetch('add_to_cart.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: `product_id=${productId}&quantity=1`
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Đã thêm sản phẩm vào danh sách đăng ký!');
-                        } else {
-                            alert('Có lỗi xảy ra: ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Có lỗi xảy ra khi thêm sản phẩm vào danh sách đăng ký!');
-                    });
-            });
-        });
-    </script>
-
-
+</div>
+<script src="js/script.js"></script>
 </body>
-
 </html>

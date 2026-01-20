@@ -33,7 +33,7 @@ if (!$order) {
     exit();
 }
 
-// Lấy chi tiết sản phẩm
+// Lấy chi tiết Dịch vụ
 $stmt = $pdo->prepare("
     SELECT oi.*, p.name as product_name, p.image_url as product_image 
     FROM order_items oi 
@@ -139,9 +139,9 @@ $status_text = [
                 <?php endif; ?>
             </div>
 
-            <!-- Danh sách sản phẩm -->
+            <!-- Danh sách Dịch vụ -->
             <div class="products-section">
-                <h3>📦 Sản phẩm đã đặt (<?php echo count($order_items); ?> sản phẩm)</h3>
+                <h3>📦 Dịch vụ đã đặt (<?php echo count($order_items); ?> Dịch vụ)</h3>
                 
                 <?php foreach ($order_items as $item): ?>
                 <div class="product-item">
@@ -153,7 +153,7 @@ $status_text = [
                     <?php endif; ?>
                     
                     <div class="product-info">
-                        <div class="product-name"><?php echo htmlspecialchars($item['product_name'] ?? 'Sản phẩm không xác định'); ?></div>
+                        <div class="product-name"><?php echo htmlspecialchars($item['product_name'] ?? 'Dịch vụ không xác định'); ?></div>
                         <div class="product-details">
                             Số lượng: <?php echo $item['quantity']; ?> × 
                             <?php echo number_format($item['price'], 0, ',', '.'); ?> VNĐ = 

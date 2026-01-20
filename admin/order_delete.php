@@ -5,7 +5,7 @@ require_once '../config.php';
 
 $order_id = $_GET['id'] ?? 0;
 
-// Xóa các sản phẩm trong đơn hàng trước (nếu có bảng order_items)
+// Xóa các Dịch vụ trong đơn hàng trước (nếu có bảng order_items)
 $stmt = $pdo->prepare("DELETE FROM order_items WHERE order_id=?");
 $stmt->execute([$order_id]);
 

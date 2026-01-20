@@ -26,15 +26,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Thêm sản phẩm</title>
+    <title>Thêm Dịch vụ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <div class="container my-5">
-    <h2>Thêm sản phẩm mới</h2>
+    <h2>Thêm Dịch vụ mới</h2>
     <form method="post">
         <div class="mb-3">
-            <label>Tên sản phẩm</label>
+            <label>Tên Dịch vụ</label>
             <input type="text" name="name" class="form-control" required>
         </div>
         <div class="mb-3">
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="text" name="image_url" class="form-control">
         </div>
         <div class="mb-3">
-            <label>Danh mục</label>
+            <label>Chuyên khoa</label>
             <select name="category_id" class="form-control" required>
                 <?php foreach ($categories as $c): ?>
                     <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['name']) ?></option>

@@ -33,7 +33,7 @@ require_once 'config.php';
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link text-white" href="index.php">Trang chủ</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="products.php">Sản phẩm mới</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="products.php">Dịch vụ mới</a></li>
                     <li class="nav-item"><a class="nav-link text-warning" href="news.php">Tin tức và khuyến mãi</a></li>
                     <li class="nav-item"><a class="nav-link text-white" href="contact.php">Liên hệ</a></li>
                 </ul>
@@ -48,7 +48,7 @@ require_once 'config.php';
             <img class="news-img" src="https://bizweb.dktcdn.net/100/340/361/files/xx-07445.jpg?v=1743673474622" alt="Tin tức mới">
             <div class="news-content">
                 <h5> UPDATE VỢT PICKLEBALL &amp; CẦU LÔNG - BỘ ĐÔI VỢT THỂ THAO ĐƯỢC MONG ĐỢI</h5>
-                <div class="desc">Tin vui dành cho chính thức lên kệ các sản phẩm vợt thể thao Pickleball và Cầu lông...</div>
+                <div class="desc">Tin vui dành cho chính thức lên kệ các Dịch vụ vợt thể thao Pickleball và Cầu lông...</div>
             </div>
         </div>
         <!-- Tin tức 2 -->

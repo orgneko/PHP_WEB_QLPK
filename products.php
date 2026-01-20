@@ -2,14 +2,14 @@
 session_start();
 require_once 'config.php';
 
-// Lấy danh sách danh mục
+// Lấy danh sách Chuyên khoa
 $categories = $pdo->query("SELECT * FROM categories")->fetchAll();
 
 // Xử lý lọc
 $where = [];
 $params = [];
 
-// Lọc theo nhiều danh mục
+// Lọc theo nhiều Chuyên khoa
 if (!empty($_GET['category'])) {
     $catArr = array_map('intval', (array)$_GET['category']);
     $where[] = 'category_id IN (' . implode(',', $catArr) . ')';
@@ -50,7 +50,7 @@ $products = $stmt->fetchAll();
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Sản phẩm - SportShop</title>
+    <title>Dịch vụ - SportShop</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .product-grid {
@@ -150,7 +150,7 @@ $products = $stmt->fetchAll();
 </head>
 <body>
 <div class="container mt-4">
-    <h2 class="mb-4">Sản phẩm thể thao</h2>
+    <h2 class="mb-4">Dịch vụ thể thao</h2>
     <a href="index.php" class="btn btn-secondary mb-3">
         <i class="fas fa-arrow-left"></i> Về trang chủ
     </a>
@@ -158,7 +158,7 @@ $products = $stmt->fetchAll();
     <div class="row">
         <div class="col-md-3">
             <form method="get" id="filterForm">
-                <h5 class="mb-3">DÒNG SẢN PHẨM</h5>
+                <h5 class="mb-3">DÒNG Dịch vụ</h5>
                 <?php foreach ($categories as $cat): ?>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="category[]" value="<?= $cat['id'] ?>"
@@ -187,7 +187,7 @@ $products = $stmt->fetchAll();
                     </div>
                 <?php endforeach; ?>
 
-                <!-- Thêm các loại sản phẩm khác nếu có -->
+                <!-- Thêm các loại Dịch vụ khác nếu có -->
                 <!-- ... -->
 
                 <button type="submit" class="btn btn-primary mt-3">Lọc</button>
@@ -224,13 +224,13 @@ $products = $stmt->fetchAll();
                                         <?php endif; ?>
                                     </div>
                                     <small class="text-muted">
-                                        Còn <?= $p['stock_quantity'] ?> sản phẩm
+                                        Còn <?= $p['stock_quantity'] ?> Dịch vụ
                                     </small>
                                 </div>
                             </div>
                         </a>
                         <button class="btn-add-cart" onclick="addToCart(<?= $p['id'] ?>)">
-                            Thêm vào giỏ
+                            Đăng ký khám
                         </button>
                     </div>
                 <?php endforeach; ?>
@@ -251,7 +251,7 @@ function addToCart(productId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert('Đã thêm vào giỏ hàng!');
+            alert('Đã Đăng ký khám hàng!');
         } else {
             alert(data.message || 'Có lỗi xảy ra!');
         }

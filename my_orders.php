@@ -421,8 +421,8 @@ function getStatusColor($status) {
                         <div class="order-body">
                             <div class="order-summary">
                                 <div class="summary-item">
-                                    <div class="summary-label">Số lượng sản phẩm</div>
-                                    <div class="summary-value"><?php echo $order['total_items']; ?> sản phẩm</div>
+                                    <div class="summary-label">Số lượng Dịch vụ</div>
+                                    <div class="summary-value"><?php echo $order['total_items']; ?> Dịch vụ</div>
                                 </div>
                                 <div class="summary-item">
                                     <div class="summary-label">Tổng tiền</div>

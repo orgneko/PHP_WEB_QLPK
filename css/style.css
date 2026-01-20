@@ -1,0 +1,460 @@
+
+        body {
+            font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+            background: #f6f8fa;
+            color: #222;
+        }
+        .navbar {
+            background: linear-gradient(90deg, #007bff 0%, #43cea2 100%) !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 28px;
+            color: #ffe600 !important;
+            letter-spacing: 1px;
+        }
+        .navbar-nav .nav-link {
+            color: #fff !important;
+            font-size: 16px;
+            font-weight: 500;
+            margin: 0 8px;
+            transition: color 0.2s;
+        }
+        .navbar-nav .nav-link.text-warning {
+            color: #ffe600 !important;
+            font-weight: bold;
+        }
+        .navbar-nav .nav-link:hover, .navbar-nav .nav-link.active {
+            color: #43cea2 !important;
+        }
+        .navbar-toggler {
+            border: none;
+        }
+        .banner-carousel {
+            background: #232323;
+        }
+        .carousel-inner {
+            min-height: 420px;
+            border-radius: 0 0 24px 24px;
+            overflow: hidden;
+        }
+        .carousel-item {
+            position: relative;
+        }
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: #ffe600;
+            border-radius: 50%;
+        }
+        .category-filter {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .product-card {
+            border: none;
+            border-radius: 14px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            background: #fff;
+        }
+        .product-card:hover {
+            transform: translateY(-7px) scale(1.03);
+            box-shadow: 0 8px 24px rgba(67,206,162,0.13);
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #232323;
+        }
+        .price-original {
+            text-decoration: line-through;
+            color: #6c757d;
+            font-size: 15px;
+        }
+        .price-sale {
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .btn-outline-primary {
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        .btn-primary, .btn-outline-primary:active {
+            background: linear-gradient(90deg, #007bff 0%, #43cea2 100%);
+            border: none;
+            font-weight: 600;
+            border-radius: 6px;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #43cea2 0%, #007bff 100%);
+        }
+        .footer {
+            background: #232323;
+            color: #fff;
+            padding: 48px 0 0 0;
+            font-family: 'Roboto', Arial, sans-serif;
+            margin-top: 48px;
+        }
+        .footer h5 {
+            color: #ffe600;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 18px;
+            letter-spacing: 0.5px;
+        }
+        .footer a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer a:hover {
+            color: #43cea2;
+            text-decoration: underline;
+        }
+        .footer .social-icons a {
+            font-size: 22px;
+            margin-right: 14px;
+            color: #fff;
+            transition: color 0.2s;
+        }
+        .footer .social-icons a:hover {
+            color: #ffe600;
+        }
+        .footer .footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-top: 30px;
+            padding-bottom: 18px;
+        }
+        .footer .footer-bottom button {
+            background: #002b5c;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 18px;
+            font-weight: bold;
+            font-size: 15px;
+        }
+        @media (max-width: 991px) {
+            .navbar-nav.mx-auto {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+            }
+            .footer .container {
+                flex-direction: column;
+            }
+        }
+        @media (max-width: 600px) {
+            .category-filter {
+                padding: 12px;
+            }
+            .footer {
+                padding: 24px 0 0 0;
+            }
+            .carousel-inner {
+                min-height: 220px;
+            }
+        }
+        .banner-carousel .banner-title {
+            font-size: 48px;
+            font-weight: bold;
+            color: #ffe600;
+            text-align: center;
+            margin-top: 80px;
+            text-shadow: 2px 2px 8px #232323;
+        }
+        .banner-carousel .banner-sub {
+            font-size: 28px;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .banner-carousel .banner-btn {
+            display: block;
+            margin: 32px auto 0 auto;
+            font-size: 22px;
+            font-weight: bold;
+            background: #fff;
+            color: #232323;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        /* --- STYLE CHO PHẦN 'TẠI SAO CHỌN CHÚNG TÔI' --- */
+
+/* Cái hộp bao quanh nội dung */
+.feature-box {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05); /* Đổ bóng nhẹ cho sang */
+    transition: transform 0.3s ease;
+    text-align: center;
+    border: 1px solid #eee;
+}
+
+/* Hiệu ứng khi di chuột vào hộp: Nổi lên một chút */
+.feature-box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* Hình tròn chứa icon */
+.icon-circle {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #007bff, #00c6ff); /* Màu xanh gradient */
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+.feature-box h5 {
+    color: #103095; /* Màu xanh đậm thương hiệu */
+}
+.service-card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    /* ... (code cũ của bạn) ... */
+    min-height: 140px;
+}
+
+.service-card i, .service-card h6 {
+    color: #103095; 
+    font-weight: bold;
+}
+.service-card.active {
+    background-color: #00BCD4; 
+    color: white;
+    border-top-left-radius: 50px; 
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    border-bottom-left-radius: 12px;
+}
+/* --- STYLE CHO PHẦN BÁC SĨ --- */
+.doctor-card {
+    background: white;
+    border-radius: 15px;
+    border: 1px solid #eee;
+    transition: all 0.3s ease;
+}
+
+/* Hiệu ứng hover cho thẻ bác sĩ */
+.doctor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    border-color: #00BCD4;
+}
+
+/* Ảnh bác sĩ hình tròn */
+.doctor-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%; /* Làm tròn ảnh */
+    object-fit: cover; /* Đảm bảo ảnh không bị méo */
+    border: 3px solid #F0F5FA;
+}
+
+
+/* --- STYLE CHO PHẦN TIN TỨC --- */
+.news-card {
+    border-radius: 12px;
+    overflow: hidden; /* Để bo góc cả ảnh bên trong */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    border: 1px solid #eee;
+}
+
+.news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.news-card img {
+    height: 200px;
+    object-fit: cover; /* Cắt ảnh vừa khung, không bị méo */
+}
+
+.news-card h5 {
+    font-size: 1.1rem;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Chỉ hiện tối đa 2 dòng tiêu đề */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+/* Style cho Modal (Popup) */
+.modal-overlay {
+    display: none; /* Mặc định ẩn */
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5); /* Nền tối mờ */
+    animation: fadeIn 0.3s;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 10% auto; /* Cách trên 10% và căn giữa */
+    padding: 30px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 500px; /* Độ rộng tối đa */
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
+}
+
+.close-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 10px;
+}
+
+.close-modal:hover { color: black; }
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+/* Nút tròn nổi bật góc màn hình */
+.chat-toggle-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 50%;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    cursor: pointer;
+    font-size: 24px;
+    z-index: 1000;
+    transition: transform 0.3s;
+}
+
+.chat-toggle-btn:hover { transform: scale(1.1); }
+
+/* Khung Chat Widget */
+.chat-widget {
+    display: none; /* Mặc định ẩn */
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    width: 350px;
+    height: 450px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    z-index: 1001;
+    overflow: hidden;
+    flex-direction: column;
+}
+
+.chat-header {
+    background: linear-gradient(135deg, #007bff, #00c6ff);
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-avatar {
+    width: 40px;
+    height: 40px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-chat { font-size: 24px; cursor: pointer; }
+
+.chat-body {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+}
+
+.message {
+    padding: 10px 15px;
+    border-radius: 15px;
+    margin-bottom: 10px;
+    max-width: 80%;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.bot-message {
+    background-color: #e9ecef;
+    color: #333;
+    border-bottom-left-radius: 2px;
+}
+
+.user-message {
+    background-color: #007bff;
+    color: white;
+    margin-left: auto; /* Đẩy sang phải */
+    border-bottom-right-radius: 2px;
+}
+
+.option-btn {
+    background-color: white;
+    border: 1px solid #007bff;
+    color: #007bff;
+    padding: 5px 10px;
+    border-radius: 20px;
+    margin: 3px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.option-btn:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.chat-footer {
+    padding: 10px;
+    border-top: 1px solid #eee;
+    display: flex;
+}
+
+.chat-footer input {
+    flex: 1;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 5px 15px;
+    margin-right: 10px;
+}
+
+.chat-footer button {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+}

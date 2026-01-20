@@ -2,7 +2,7 @@
 session_start();
 require_once '../config.php';
 
-// Xử lý xóa sản phẩm
+// Xử lý xóa Dịch vụ
 if (isset($_GET['delete'])) {
     $id = (int)$_GET['delete'];
     $pdo->prepare("DELETE FROM products WHERE id=?")->execute([$id]);
@@ -10,7 +10,7 @@ if (isset($_GET['delete'])) {
     exit();
 }
 
-// Xử lý thêm sản phẩm
+// Xử lý thêm Dịch vụ
 if (isset($_POST['add'])) {
     $stmt = $pdo->prepare("INSERT INTO products (name, code, category_id, supplier_id, description, price, sale_price, stock_quantity, sizes, colors, image_url, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
     $stmt->execute([
@@ -22,7 +22,7 @@ if (isset($_POST['add'])) {
     exit();
 }
 
-// Xử lý sửa sản phẩm
+// Xử lý sửa Dịch vụ
 if (isset($_POST['edit'])) {
     $stmt = $pdo->prepare("UPDATE products SET name=?, code=?, category_id=?, supplier_id=?, description=?, price=?, sale_price=?, stock_quantity=?, sizes=?, colors=?, image_url=?, status=? WHERE id=?");
     $stmt->execute([
@@ -34,13 +34,13 @@ if (isset($_POST['edit'])) {
     exit();
 }
 
-// Lấy danh sách sản phẩm
+// Lấy danh sách Dịch vụ
 $products = $pdo->query("SELECT * FROM products ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
-// Lấy danh mục và nhà cung cấp cho select box
+// Lấy Chuyên khoa và nhà cung cấp cho select box
 $categories = $pdo->query("SELECT * FROM categories")->fetchAll(PDO::FETCH_ASSOC);
 $suppliers = $pdo->query("SELECT * FROM suppliers")->fetchAll(PDO::FETCH_ASSOC);
 
-// Nếu sửa, lấy thông tin sản phẩm
+// Nếu sửa, lấy thông tin Dịch vụ
 $edit_product = null;
 if (isset($_GET['edit'])) {
     $stmt = $pdo->prepare("SELECT * FROM products WHERE id=?");
@@ -52,16 +52,16 @@ if (isset($_GET['edit'])) {
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý sản phẩm</title>
+    <title>Quản lý Dịch vụ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <div class="container my-5">
-    <h2>Quản lý sản phẩm</h2>
+    <h2>Quản lý Dịch vụ</h2>
     <a href="index.php" class="btn btn-secondary mb-3">Về trang chủ admin</a>
-    <!-- Form thêm/sửa sản phẩm -->
+    <!-- Form thêm/sửa Dịch vụ -->
     <div class="card mb-4">
-        <div class="card-header"><?= $edit_product ? 'Sửa sản phẩm' : 'Thêm sản phẩm mới' ?></div>
+        <div class="card-header"><?= $edit_product ? 'Sửa Dịch vụ' : 'Thêm Dịch vụ mới' ?></div>
         <div class="card-body">
             <form method="post">
                 <?php if ($edit_product): ?>
@@ -69,7 +69,7 @@ if (isset($_GET['edit'])) {
                 <?php endif; ?>
                 <div class="row">
                     <div class="col-md-4 mb-2">
-                        <label>Tên sản phẩm</label>
+                        <label>Tên Dịch vụ</label>
                         <input type="text" name="name" class="form-control" required value="<?= $edit_product['name'] ?? '' ?>">
                     </div>
                     <div class="col-md-2 mb-2">
@@ -77,7 +77,7 @@ if (isset($_GET['edit'])) {
                         <input type="text" name="code" class="form-control" required value="<?= $edit_product['code'] ?? '' ?>">
                     </div>
                     <div class="col-md-2 mb-2">
-                        <label>Danh mục</label>
+                        <label>Chuyên khoa</label>
                         <select name="category_id" class="form-control" required>
                             <option value="">--Chọn--</option>
                             <?php foreach ($categories as $c): ?>
@@ -139,14 +139,14 @@ if (isset($_GET['edit'])) {
             </form>
         </div>
     </div>
-    <!-- Danh sách sản phẩm -->
+    <!-- Danh sách Dịch vụ -->
     <table class="table table-bordered">
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Tên SP</th>
                 <th>Mã</th>
-                <th>Danh mục</th>
+                <th>Chuyên khoa</th>
                 <th>Nhà cung cấp</th>
                 <th>Giá</th>
                 <th>KM</th>
@@ -185,7 +185,7 @@ if (isset($_GET['edit'])) {
                 </td>
                 <td>
                     <a href="products.php?edit=<?= $p['id'] ?>" class="btn btn-warning btn-sm">Sửa</a>
-                    <a href="products.php?delete=<?= $p['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Xóa sản phẩm này?')">Xóa</a>
+                    <a href="products.php?delete=<?= $p['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Xóa Dịch vụ này?')">Xóa</a>
                 </td>
             </tr>
             <?php endforeach; ?>

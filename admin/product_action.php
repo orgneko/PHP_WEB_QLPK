@@ -21,7 +21,7 @@ if ($action === 'add') {
         $_POST['supplier_id'],
         $_POST['status']
     ]);
-    echo json_encode(['success' => true, 'message' => 'Thêm sản phẩm thành công!']);
+    echo json_encode(['success' => true, 'message' => 'Thêm Dịch vụ thành công!']);
     exit;
 }
 
@@ -46,14 +46,14 @@ if ($action === 'update' && $id) {
         $_POST['status'],
         $id
     ]);
-    echo json_encode(['success' => true, 'message' => 'Cập nhật sản phẩm thành công!']);
+    echo json_encode(['success' => true, 'message' => 'Cập nhật Dịch vụ thành công!']);
     exit;
 }
 
 if ($action === 'delete' && $id) {
     $stmt = $pdo->prepare("DELETE FROM products WHERE id=?");
     $stmt->execute([$id]);
-    echo json_encode(['success' => true, 'message' => 'Xóa sản phẩm thành công!']);
+    echo json_encode(['success' => true, 'message' => 'Xóa Dịch vụ thành công!']);
     exit;
 }
 

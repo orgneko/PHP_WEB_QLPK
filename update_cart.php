@@ -19,7 +19,7 @@ if ($action === 'remove' && $cart_id) {
     if ($stmt->execute([$cart_id, $user_id])) {
         echo json_encode(['success' => true]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Không thể xóa sản phẩm']);
+        echo json_encode(['success' => false, 'message' => 'Không thể xóa Dịch vụ']);
     }
     exit;
 }

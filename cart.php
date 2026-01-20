@@ -7,7 +7,7 @@ if (!isLoggedIn()) {
 
 $user_id = $_SESSION['user_id'];
 
-// Lấy giỏ hàng của người dùng
+// Lấy Danh sách lịch hẹn của người dùng
 $stmt = $pdo->prepare("
     SELECT c.*, p.name, p.price, p.sale_price, p.image_url, p.stock_quantity
     FROM cart c
@@ -31,7 +31,7 @@ foreach ($cart_items as $item) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giỏ hàng - SportWear Shop</title>
+    <title>Danh sách lịch hẹn - BHH</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -111,17 +111,17 @@ foreach ($cart_items as $item) {
         <div class="row">
             <div class="col-md-8">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2><i class="fas fa-shopping-cart"></i> Giỏ hàng của bạn</h2>
+                    <h2><i class="fas fa-shopping-cart"></i> Danh sách lịch hẹn của bạn</h2>
                     <?php if (!empty($cart_items)): ?>
-                        <small class="text-muted"><?= count($cart_items) ?> sản phẩm</small>
+                        <small class="text-muted"><?= count($cart_items) ?> Dịch vụ</small>
                     <?php endif; ?>
                 </div>
 
                 <?php if (empty($cart_items)): ?>
                     <div class="empty-cart">
                         <i class="fas fa-shopping-cart"></i>
-                        <h4>Giỏ hàng trống</h4>
-                        <p>Bạn chưa có sản phẩm nào trong giỏ hàng.</p>
+                        <h4>Danh sách lịch hẹn trống</h4>
+                        <p>Bạn chưa có Dịch vụ nào trong Danh sách lịch hẹn.</p>
                         <a href="index.php" class="btn btn-primary">
                             <i class="fas fa-shopping-bag"></i> Tiếp tục mua sắm
                         </a>
@@ -275,7 +275,7 @@ foreach ($cart_items as $item) {
         // Remove item
         document.querySelectorAll('.btn-remove').forEach(button => {
             button.addEventListener('click', function() {
-                if (confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?')) {
+                if (confirm('Bạn có chắc muốn xóa Dịch vụ này khỏi Danh sách lịch hẹn?')) {
                     removeFromCart(this.dataset.cartId);
                 }
             });

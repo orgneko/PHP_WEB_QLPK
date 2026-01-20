@@ -45,7 +45,7 @@ if (!$order) {
     $error = 'Không tìm thấy đơn hàng hoặc bạn không có quyền truy cập!';
 }
 
-// Lấy chi tiết sản phẩm trong đơn hàng
+// Lấy chi tiết Dịch vụ trong đơn hàng
 $order_items = [];
 $total_amount = 0;
 if ($order) {
@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_cancel'])) {
             ");
             $stmt->execute([$order_id, $user_id]);
 
-            // Hoàn lại số lượng sản phẩm vào kho
+            // Hoàn lại số lượng Dịch vụ vào kho
             foreach ($order_items as $item) {
                 $stmt = $pdo->prepare("
                     UPDATE products 
@@ -513,10 +513,10 @@ $can_cancel = $order && $order['status'] === 'pending';
                     </div>
                 </div>
 
-                <!-- Danh sách sản phẩm -->
+                <!-- Danh sách Dịch vụ -->
                 <?php if (!empty($order_items)): ?>
                     <div class="products-section">
-                        <h3>📦 Sản phẩm trong đơn hàng</h3>
+                        <h3>📦 Dịch vụ trong đơn hàng</h3>
                         <?php foreach ($order_items as $item): ?>
                             <div class="product-item">
                                 <?php if ($item['product_image']): ?>
@@ -529,7 +529,7 @@ $can_cancel = $order && $order['status'] === 'pending';
                                     </div>
                                 <?php endif; ?>
                                 <div class="product-info">
-                                    <div class="product-name"><?php echo htmlspecialchars($item['product_name'] ?? 'Sản phẩm không xác định'); ?></div>
+                                    <div class="product-name"><?php echo htmlspecialchars($item['product_name'] ?? 'Dịch vụ không xác định'); ?></div>
                                     <div class="product-details">
                                         Số lượng: <?php echo $item['quantity']; ?> × 
                                         <?php echo number_format($item['price'], 0, ',', '.'); ?> VNĐ = 
@@ -567,7 +567,7 @@ $can_cancel = $order && $order['status'] === 'pending';
                             <li>Đơn hàng chỉ có thể hủy khi đang ở trạng thái "Chờ xác nhận"</li>
                             <li>Sau khi hủy, bạn không thể khôi phục lại đơn hàng</li>
                             <li>Nếu đã thanh toán, số tiền sẽ được hoàn lại trong 3-5 ngày làm việc</li>
-                            <li>Sản phẩm sẽ được trả lại kho tự động</li>
+                            <li>Dịch vụ sẽ được trả lại kho tự động</li>
                         </ul>
                     </div>
 

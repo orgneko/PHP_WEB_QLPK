@@ -3,7 +3,7 @@
 session_start();
 require_once '../config.php';
 
-// Tổng số sản phẩm
+// Tổng số Dịch vụ
 $total_products = $pdo->query("SELECT COUNT(*) FROM products")->fetchColumn();
 // Tổng số đơn hàng
 $total_orders = $pdo->query("SELECT COUNT(*) FROM orders")->fetchColumn();
@@ -13,7 +13,7 @@ $total_revenue = $pdo->query("SELECT SUM(total_amount) FROM orders WHERE status=
 $today_orders = $pdo->query("SELECT COUNT(*) FROM orders WHERE DATE(created_at) = CURDATE()")->fetchColumn();
 // Doanh thu hôm nay
 $today_revenue = $pdo->query("SELECT SUM(total_amount) FROM orders WHERE status='completed' AND DATE(created_at) = CURDATE()")->fetchColumn();
-// Top 5 sản phẩm bán chạy
+// Top 5 Dịch vụ bán chạy
 $top_products = $pdo->query("
     SELECT p.name, SUM(oi.quantity) as total_sold
     FROM order_items oi
@@ -54,7 +54,7 @@ $top_customers = $pdo->query("
     <div class="row mb-4">
         <div class="col-md-4">
             <div class="stat-card">
-                <div class="stat-label">Tổng sản phẩm</div>
+                <div class="stat-label">Tổng Dịch vụ</div>
                 <div class="stat-value"><?= $total_products ?></div>
             </div>
         </div>
@@ -85,11 +85,11 @@ $top_customers = $pdo->query("
             </div>
         </div>
     </div>
-    <h4 class="section-title">Top 5 sản phẩm bán chạy</h4>
+    <h4 class="section-title">Top 5 Dịch vụ bán chạy</h4>
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Sản phẩm</th>
+                <th>Dịch vụ</th>
                 <th>Số lượng bán</th>
             </tr>
         </thead>

@@ -35,11 +35,11 @@ if ($order) {
             <strong>Trạng thái:</strong> <?= htmlspecialchars($order['status']) ?><br>
             <strong>Tổng tiền:</strong> <?= number_format($order['total_amount'],0,',','.') ?>đ
         </div>
-        <h5>Sản phẩm trong đơn hàng</h5>
+        <h5>Dịch vụ trong đơn hàng</h5>
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>Tên sản phẩm</th>
+                    <th>Tên Dịch vụ</th>
                     <th>Số lượng</th>
                     <th>Giá</th>
                     <th>Thành tiền</th>

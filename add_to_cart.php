@@ -20,13 +20,13 @@ $size = sanitizeInput($_POST['size'] ?? '');
 $color = sanitizeInput($_POST['color'] ?? '');
 
 try {
-    // Kiểm tra sản phẩm có tồn tại không
+    // Kiểm tra Dịch vụ có tồn tại không
     $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ? AND status = 'active'");
     $stmt->execute([$product_id]);
     $product = $stmt->fetch();
 
     if (!$product) {
-        echo json_encode(['success' => false, 'message' => 'Sản phẩm không tồn tại']);
+        echo json_encode(['success' => false, 'message' => 'Dịch vụ không tồn tại']);
         exit;
     }
 
@@ -36,7 +36,7 @@ try {
         exit;
     }
 
-    // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
+    // Kiểm tra xem Dịch vụ đã có trong giỏ hàng chưa
     $stmt = $pdo->prepare("SELECT * FROM cart WHERE user_id = ? AND product_id = ? AND size = ? AND color = ?");
     $stmt->execute([$user_id, $product_id, $size, $color]);
     $existing_item = $stmt->fetch();
@@ -58,7 +58,7 @@ try {
         $stmt->execute([$user_id, $product_id, $quantity, $size, $color]);
     }
 
-    echo json_encode(['success' => true, 'message' => 'Đã thêm vào giỏ hàng']);
+    echo json_encode(['success' => true, 'message' => 'Đã Đăng ký khám hàng']);
 
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => 'Có lỗi xảy ra: ' . $e->getMessage()]);

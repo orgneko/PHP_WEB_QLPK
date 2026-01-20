@@ -2,10 +2,10 @@
 session_start();
 require_once 'config.php';
 
-// Lấy ID sản phẩm từ URL
+// Lấy ID Dịch vụ từ URL
 $product_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-// Lấy thông tin chi tiết sản phẩm
+// Lấy thông tin chi tiết Dịch vụ
 $stmt = $pdo->prepare("
     SELECT p.*, c.name as category_name, s.name as supplier_name 
     FROM products p 
@@ -16,13 +16,13 @@ $stmt = $pdo->prepare("
 $stmt->execute([$product_id]);
 $product = $stmt->fetch();
 
-// Nếu không tìm thấy sản phẩm, chuyển về trang chủ
+// Nếu không tìm thấy Dịch vụ, chuyển về trang chủ
 if (!$product) {
     header('Location: index.php');
     exit;
 }
 
-// Lấy các sản phẩm liên quan (cùng danh mục)
+// Lấy các Dịch vụ liên quan (cùng Chuyên khoa)
 $stmt = $pdo->prepare("
     SELECT * FROM products 
     WHERE category_id = ? AND id != ? 
@@ -59,14 +59,14 @@ $related_products = $stmt->fetchAll();
 <body>
     <div class="container my-5">
         <div class="row">
-            <!-- Ảnh sản phẩm -->
+            <!-- Ảnh Dịch vụ -->
             <div class="col-md-6">
                 <img src="<?= htmlspecialchars($product['image_url']) ?>" 
                      class="img-fluid product-image" 
                      alt="<?= htmlspecialchars($product['name']) ?>">
             </div>
             
-            <!-- Thông tin sản phẩm -->
+            <!-- Thông tin Dịch vụ -->
             <div class="col-md-6">
                 <div class="product-info">
                     <nav aria-label="breadcrumb">
@@ -83,7 +83,7 @@ $related_products = $stmt->fetchAll();
 
                     <h1 class="h2 mb-3"><?= htmlspecialchars($product['name']) ?></h1>
                     
-                    <p class="text-muted">Mã sản phẩm: <?= htmlspecialchars($product['code']) ?></p>
+                    <p class="text-muted">Mã Dịch vụ: <?= htmlspecialchars($product['code']) ?></p>
                     
                     <div class="mb-3">
                         <?php if ($product['sale_price']): ?>
@@ -102,7 +102,7 @@ $related_products = $stmt->fetchAll();
 
                     <?php if (isLoggedIn()): ?>
                         <button class="btn btn-primary btn-lg mb-3" onclick="addToCart()">
-                            <i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng
+                            <i class="fas fa-cart-plus"></i> Đăng ký khám
                         </button>
                     <?php else: ?>
                         <a href="login.php" class="btn btn-primary btn-lg mb-3">
@@ -111,12 +111,12 @@ $related_products = $stmt->fetchAll();
                     <?php endif; ?>
 
                     <div class="mb-4">
-                        <h5>Mô tả sản phẩm:</h5>
+                        <h5>Mô tả Dịch vụ:</h5>
                         <p><?= nl2br(htmlspecialchars($product['description'])) ?></p>
                     </div>
 
                     <div class="additional-info">
-                        <p><strong>Danh mục:</strong> <?= htmlspecialchars($product['category_name']) ?></p>
+                        <p><strong>Chuyên khoa:</strong> <?= htmlspecialchars($product['category_name']) ?></p>
                         <?php if ($product['supplier_name']): ?>
                             <p><strong>Nhà cung cấp:</strong> <?= htmlspecialchars($product['supplier_name']) ?></p>
                         <?php endif; ?>
@@ -128,10 +128,10 @@ $related_products = $stmt->fetchAll();
             </div>
         </div>
 
-        <!-- Sản phẩm liên quan -->
+        <!-- Dịch vụ liên quan -->
         <?php if ($related_products): ?>
             <div class="mt-5">
-                <h3>Sản phẩm liên quan</h3>
+                <h3>Dịch vụ liên quan</h3>
                 <div class="row">
                     <?php foreach ($related_products as $related): ?>
                         <div class="col-md-3">
@@ -174,14 +174,14 @@ $related_products = $stmt->fetchAll();
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('Đã thêm sản phẩm vào giỏ hàng!');
+                alert('Đã thêm Dịch vụ vào giỏ hàng!');
             } else {
                 alert('Có lỗi xảy ra: ' + data.message);
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Có lỗi xảy ra khi thêm vào giỏ hàng!');
+            alert('Có lỗi xảy ra khi Đăng ký khám hàng!');
         });
     }
     </script>

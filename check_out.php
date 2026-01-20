@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt = $pdo->prepare($detail_sql);
             $stmt->execute([$order_id, $item['product_id'], $item['quantity'], $item['gia']]);
 
-            // Cập nhật số lượng sản phẩm
+            // Cập nhật số lượng Dịch vụ
             $update_stock = "UPDATE products SET stock_quantity = stock_quantity - ? WHERE id = ?";
             $stmt = $pdo->prepare($update_stock);
             $stmt->execute([$item['quantity'], $item['product_id']]);

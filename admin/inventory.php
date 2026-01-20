@@ -15,14 +15,14 @@ $products = $pdo->query("SELECT * FROM products")->fetchAll();
 </head>
 <body>
     <div class="container mt-5">
-        <h2 class="mb-4">Báo cáo tồn kho sản phẩm</h2>
+        <h2 class="mb-4">Báo cáo tồn kho Dịch vụ</h2>
         <a href="index.php" class="btn btn-secondary mb-3">Về trang chủ admin</a>
         <table class="table table-bordered table-hover">
             <thead class="table-dark">
                 <tr>
                     <th>Mã SP</th>
-                    <th>Tên sản phẩm</th>
-                    <th>Danh mục</th>
+                    <th>Tên Dịch vụ</th>
+                    <th>Chuyên khoa</th>
                     <th>Tồn kho</th>
                     <th>Cảnh báo</th>
                 </tr>
