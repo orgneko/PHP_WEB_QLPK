@@ -224,7 +224,7 @@ function botReply(type) {
         if (type === 'price') {
             replyText = "Giá khám tổng quát là 200.000đ. Khám chuyên khoa từ 300.000đ ạ.";
         } else if (type === 'address') {
-            replyText = "Phòng khám ở số 123 Đường ABC, Quận XYZ, TP.HCM ạ.";
+            replyText = "Phòng khám ở số 36 Đường ABC, Thành phố Thanh Hóa ạ.";
         } else if (type === 'book') {
             replyText = "Bạn có thể ấn nút 'Đặt lịch khám' màu xanh ở trên menu nhé!";
         } else if (type === 'human') {
@@ -237,4 +237,62 @@ function botReply(type) {
         // Tự động cuộn xuống cuối
         chatBody.scrollTop = chatBody.scrollHeight;
     }, 600);
+}
+/* --- THÊM VÀO CUỐI FILE js/script.js --- */
+
+// 1. Hàm xử lý khi ấn phím Enter
+function handleEnter(event) {
+    if (event.key === "Enter") {
+        sendMessage();
+    }
+}
+
+// 2. Hàm gửi tin nhắn đi
+async function sendMessage() {
+    let inputField = document.getElementById("chat-input");
+    let message = inputField.value.trim();
+    let chatBody = document.getElementById("chat-body");
+
+    if (message === "") return;
+
+    // A. Hiển thị tin nhắn của Người dùng lên màn hình
+    let userMsgHTML = `<div class="message user-message">${message}</div>`;
+    chatBody.insertAdjacentHTML('beforeend', userMsgHTML);
+    inputField.value = ""; // Xóa ô nhập
+    chatBody.scrollTop = chatBody.scrollHeight; // Cuộn xuống cuối
+
+    // B. Hiển thị trạng thái "Đang gõ..." (Loading)
+    let loadingHTML = `<div class="message bot-message" id="loading-dots">AI đang trả lời... <i class="fas fa-spinner fa-spin"></i></div>`;
+    chatBody.insertAdjacentHTML('beforeend', loadingHTML);
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    try {
+        // C. Gửi tin nhắn sang file PHP (Backend)
+        const response = await fetch('chat_ai.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: message })
+        });
+
+        const data = await response.json();
+
+        // D. Xóa cái "Đang gõ..." và hiện câu trả lời thật
+        document.getElementById("loading-dots").remove();
+        
+        // Chuyển đổi xuống dòng (\n) thành thẻ <br> để hiển thị đẹp
+        let botText = data.reply.replace(/\n/g, "<br>");
+        
+        let botMsgHTML = `<div class="message bot-message">${botText}</div>`;
+        chatBody.insertAdjacentHTML('beforeend', botMsgHTML);
+
+    } catch (error) {
+        document.getElementById("loading-dots").remove();
+        let errorHTML = `<div class="message bot-message text-danger">Lỗi kết nối! Vui lòng thử lại.</div>`;
+        chatBody.insertAdjacentHTML('beforeend', errorHTML);
+    }
+
+    // Cuộn xuống cuối lần nữa
+    chatBody.scrollTop = chatBody.scrollHeight;
 }
