@@ -1,36 +1,48 @@
 <?php
-require_once 'config.php';
+session_start();
 
-// Lấy danh sách Dịch vụ
-$search = isset($_GET['search']) ? sanitizeInput($_GET['search']) : '';
-$category_id = isset($_GET['category']) ? (int)$_GET['category'] : 0;
-
-$sql = "SELECT p.*, c.name as category_name FROM products p 
-        LEFT JOIN categories c ON p.category_id = c.id 
-        WHERE p.status = 'active'";
-
-$params = [];
-
-if ($search) {
-    $sql .= " AND (p.name LIKE ? OR p.code LIKE ? OR p.colors LIKE ?)";
-    $searchTerm = "%{$search}%";
-    $params = [$searchTerm, $searchTerm, $searchTerm];
+// --- 1. KẾT NỐI DATABASE ---
+// Kiểm tra xem có file config không, nếu không thì kết nối trực tiếp
+if (file_exists('config.php')) {
+    require_once 'config.php';
+} else {
+    $host = 'localhost';
+    $db   = 'phongkham';
+    $user = 'root';
+    $pass = '';
+    $charset = 'utf8mb4';
+    $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+    try {
+        $pdo = new PDO($dsn, $user, $pass);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    } catch (\PDOException $e) {
+        die("Lỗi kết nối Database: " . $e->getMessage());
+    }
 }
 
-if ($category_id > 0) {
-    $sql .= $search ? " AND p.category_id = ?" : " AND p.category_id = ?";
-    $params[] = $category_id;
-}
+// --- 2. LẤY DỮ LIỆU CẦN THIẾT ---
 
-$sql .= " ORDER BY p.created_at DESC";
+// A. Lấy 4 Gói khám (Dịch vụ) mới nhất để hiển thị
+$stmt_services = $pdo->query("SELECT * FROM products WHERE status = 'active' ORDER BY created_at DESC LIMIT 4");
+$services = $stmt_services->fetchAll();
 
-$stmt = $pdo->prepare($sql);
-$stmt->execute($params);
-$products = $stmt->fetchAll();
-
-// Lấy danh sách Chuyên khoa
+// B. Lấy 4 Bác sĩ để hiển thị
 $stmt_doctors = $pdo->query("SELECT * FROM suppliers ORDER BY id ASC LIMIT 4");
 $doctors = $stmt_doctors->fetchAll();
+
+// C. Hàm kiểm tra đăng nhập (Helper)
+if (!function_exists('isLoggedIn')) {
+    function isLoggedIn()
+    {
+        return isset($_SESSION['user_id']);
+    }
+}
+if (!function_exists('isAdmin')) {
+    function isAdmin()
+    {
+        return isset($_SESSION['role']) && $_SESSION['role'] == 'admin';
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -39,558 +51,329 @@ $doctors = $stmt_doctors->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHÒNG KHÁM BHH - Đặt lịch khám thông minh</title>
+    <title>PHÒNG KHÁM BHH - Chăm sóc sức khỏe toàn diện</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
 
+        /* Cuộn trang mượt mà */
+
+        /* CSS tùy chỉnh thêm cho đẹp */
+        .service-item {
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .service-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .doctor-card img {
+            transition: transform 0.3s;
+        }
+
+        .doctor-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .banner-overlay {
+            background: linear-gradient(rgba(16, 48, 149, 0.8), rgba(16, 48, 149, 0.6));
+        }
+
+        /* Nút chat */
+        .chat-toggle-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            font-size: 24px;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+            z-index: 1000;
+            transition: transform 0.2s;
+        }
+
+        .chat-toggle-btn:hover {
+            transform: scale(1.1);
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(90deg, #007bff 0%, #43cea2 100%);">
+
+    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow-sm sticky-top px-4 py-3">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="index.php" style="font-weight: bold; font-size: 28px; color: #ffe600;">
-                Phòng Khám Thông Minh BHH
+            <a class="navbar-brand d-flex align-items-center" href="index.php" style="font-weight: bold; font-size: 26px; color: #103095;">
+                <i class="fas fa-clinic-medical me-2"></i> Phòng Khám BHH
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="index.php">Trang chủ</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="">Đặt lịch khám</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="">Hướng dẫn</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="">Liên hệ</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item me-2">
-                        <!-- <form class="d-flex" method="GET" action="products.php">
-                            <input class="form-control form-control-sm me-2" type="search" name="search" placeholder="Tìm Dịch vụ..." aria-label="Search">
-                            <button class="btn btn-outline-light btn-sm" type="submit"><i class="fas fa-search"></i></button>
-                        </form> -->
-                    </li>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto py-0">
+                    <a href="index.php" class="nav-item nav-link active">Trang chủ</a>
+                    <a href="booking.php" class="nav-item nav-link text-primary fw-bold">Đặt lịch khám</a>
+                    <a href="#services" class="nav-item nav-link">Gói khám</a>
+                    <a href="#doctors" class="nav-item nav-link">Bác sĩ</a>
+                    <a href="#footer" class="nav-item nav-link">Liên hệ</a>
+                </div>
+
+                <div class="ms-3 border-start ps-3 d-none d-lg-block">
                     <?php if (isLoggedIn()): ?>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="cart.php">
-                                <i class="fas fa-shopping-cart"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="orders.php">
-                                <i class="fas fa-box"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link text-white dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user"></i>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="profile.php">Thông tin cá nhân</a></li>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle rounded-pill px-3" type="button" id="userDropdown" data-bs-toggle="dropdown">
+                                <i class="fas fa-user me-1"></i> Tài khoản
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#">Hồ sơ bệnh án</a></li>
                                 <?php if (isAdmin()): ?>
-                                    <li><a class="dropdown-item" href="admin/">Quản trị</a></li>
+                                    <li><a class="dropdown-item text-danger" href="admin/index.php">Quản trị Admin</a></li>
                                 <?php endif; ?>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
                                 <li><a class="dropdown-item" href="logout.php">Đăng xuất</a></li>
                             </ul>
-                        </li>
+                        </div>
                     <?php else: ?>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="login.php"><i class="fas fa-sign-in-alt"></i> Đăng nhập</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="register.php"><i class="fas fa-user-plus"></i> Đăng ký</a>
-                        </li>
+                        <a href="login.php" class="btn btn-primary rounded-pill px-3 me-2">Đăng nhập</a>
+                        <a href="register.php" class="btn btn-primary rounded-pill px-3">Đăng ký</a>
                     <?php endif; ?>
-                </ul>
+                </div>
             </div>
         </div>
     </nav>
 
 
-    <div class="banner-carousel">
-        <div class="carousel-inner" style="min-height: 560px;">
-            <div class="carousel-item active">
-                <div style="
-                    min-height: 560px;
-                    background: url('sources/anh2.png') center 25%/cover no-repeat;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    position: relative;
-                ">
-                    <div class="banner-title" style="color: #ffe600; text-shadow: 2px 2px 8px #232323;">
-                        Khám Phá Dịch Vụ Mới Nhất
+    <div class="container-fluid p-0 mb-5">
+        <div class="position-relative" style="height: 600px;">
+            <img class="w-100 h-100" src="https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=1600&q=80" style="object-fit: cover;" alt="Phong kham BHH">
+
+            <div class="position-absolute top-0 start-0 w-100 h-100 banner-overlay d-flex align-items-center">
+                <div class="container">
+                    <div class="row justify-content-start">
+                        <div class="col-sm-10 col-lg-8">
+                            <h5 class="text-white text-uppercase mb-3 animated slideInDown">Uy tín - Tận tâm - Chuyên nghiệp</h5>
+                            <h1 class="display-3 text-white animated slideInDown mb-4">Chăm Sóc Sức Khỏe <br>Toàn Diện Cho Bạn</h1>
+                            <p class="fs-5 text-white mb-4 pb-2">Hệ thống đặt lịch khám thông minh, kết nối bác sĩ chuyên khoa hàng đầu mà không cần chờ đợi.</p>
+
+                            <a href="booking.php" class="btn btn-warning py-md-3 px-md-5 me-3 rounded-pill fw-bold text-dark">
+                                <i class="far fa-calendar-check me-2"></i>ĐẶT LỊCH NGAY
+                            </a>
+                        </div>
                     </div>
-                    <button class="banner-btn" style="margin-top: 32px;" onclick="window.location.href='products.php'">XEM NGAY</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="container py-5">
-        <div class="row text-center">
-            <div class="col-12 mb-4">
-                <h3 style="color: #103095; font-weight: bold;">Tại sao chọn Phòng Khám BHH?</h3>
-                <p class="text-muted">Mang lại giải pháp chăm sóc sức khỏe toàn diện và tin cậy nhất</p>
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="feature-box p-4 h-100">
-                    <div class="icon-circle mb-3">
-                        <i class="fas fa-user-md fa-2x text-white"></i>
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-lg-4 wow fadeIn">
+                    <div class="feature-item border rounded p-4 h-100 text-center shadow-sm">
+                        <div class="btn-square bg-light rounded-circle mx-auto mb-4" style="width: 80px; height: 80px; display:flex; align-items:center; justify-content:center;">
+                            <i class="fa fa-user-md fa-3x text-primary"></i>
+                        </div>
+                        <h5 class="mb-3">Bác sĩ Đầu ngành</h5>
+                        <p class="text-muted">Đội ngũ giáo sư, tiến sĩ, bác sĩ giàu kinh nghiệm từ các bệnh viện lớn.</p>
                     </div>
-                    <h5 class="font-weight-bold mb-3">Đội ngũ chuyên gia</h5>
-                    <p class="text-muted">
-                        Quy tụ các bác sĩ đầu ngành, giàu kinh nghiệm từ các bệnh viện lớn, tận tâm với người bệnh.
-                    </p>
                 </div>
-            </div>
-
-            <div class="col-md-4 mb-4">
-                <div class="feature-box p-4 h-100">
-                    <div class="icon-circle mb-3">
-                        <i class="fas fa-microscope fa-2x text-white"></i>
+                <div class="col-lg-4 wow fadeIn">
+                    <div class="feature-item border rounded p-4 h-100 text-center shadow-sm">
+                        <div class="btn-square bg-light rounded-circle mx-auto mb-4" style="width: 80px; height: 80px; display:flex; align-items:center; justify-content:center;">
+                            <i class="fa fa-check fa-3x text-primary"></i>
+                        </div>
+                        <h5 class="mb-3">Dịch vụ Chất lượng</h5>
+                        <p class="text-muted">Quy trình khám khép kín, nhanh chóng, thủ tục đơn giản.</p>
                     </div>
-                    <h5 class="font-weight-bold mb-3">Trang thiết bị hiện đại</h5>
-                    <p class="text-muted">
-                        Hệ thống máy móc nhập khẩu 100% từ Đức và Mỹ, đảm bảo kết quả chẩn đoán chính xác nhất.
-                    </p>
                 </div>
-            </div>
-
-            <div class="col-md-4 mb-4">
-                <div class="feature-box p-4 h-100">
-                    <div class="icon-circle mb-3">
-                        <i class="fas fa-clock fa-2x text-white"></i>
+                <div class="col-lg-4 wow fadeIn">
+                    <div class="feature-item border rounded p-4 h-100 text-center shadow-sm">
+                        <div class="btn-square bg-light rounded-circle mx-auto mb-4" style="width: 80px; height: 80px; display:flex; align-items:center; justify-content:center;">
+                            <i class="fa fa-comment-medical fa-3x text-primary"></i>
+                        </div>
+                        <h5 class="mb-3">Hỗ trợ 24/7</h5>
+                        <p class="text-muted">Tổng đài tư vấn và đặt lịch hoạt động liên tục các ngày trong tuần.</p>
                     </div>
-                    <h5 class="font-weight-bold mb-3">Hỗ trợ 24/7</h5>
-                    <p class="text-muted">
-                        Đội ngũ chăm sóc khách hàng và cấp cứu luôn sẵn sàng hỗ trợ bạn bất kể ngày đêm.
-                    </p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="container mt-5">
-        <!-- Search and Filter -->
-        <!-- <div class="category-filter">
-            <form method="GET" class="row g-3">
-                <div class="col-md-4">
-                    <input type="text" class="form-control" name="search" 
-                           value="<?= htmlspecialchars($search) ?>" 
-                           placeholder="Tìm kiếm Dịch vụ...">
-                </div>
-                <div class="col-md-4">
-                    <select class="form-select" name="category">
-                        <option value="0">Tất cả Chuyên khoa</option>
-                        <?php foreach ($categories as $category): ?>
-                            <option value="<?= $category['id'] ?>" 
-                                    <?= $category_id == $category['id'] ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($category['name']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-search"></i> Tìm kiếm
-                    </button>
-                    <a href="index.php" class="btn btn-outline-secondary">Reset</a>
-                </div>
-            </form>
-        </div> -->
 
-        <!-- Products Grid -->
-        <!-- <div class="row">
-            <?php if (empty($products)): ?>
-                <div class="col-12 text-center">
-                    <p class="lead text-muted">Không tìm thấy Dịch vụ nào.</p>
-                </div>
-            <?php else: ?>
-                <?php foreach ($products as $product): ?>
-                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                        <div class="card product-card h-100">
-                            <img src="<?= $product['image_url'] ?: 'images/no-image.jpg' ?>" 
-                                 class="card-img-top" alt="<?= htmlspecialchars($product['name']) ?>"
-                                 style="height: 200px; object-fit: cover;">
-                            
-                            <div class="card-body d-flex flex-column">
-                                <h6 class="card-title"><?= htmlspecialchars($product['name']) ?></h6>
-                                <p class="text-muted small">Mã: <?= htmlspecialchars($product['code']) ?></p>
-                                <p class="text-muted small mb-2"><?= htmlspecialchars($product['category_name']) ?></p>
-                                
-                                <div class="mt-auto">
-                                    <div class="price-section mb-3">
-                                        <?php if ($product['sale_price']): ?>
-                                            <span class="price-original"><?= formatPrice($product['price']) ?></span><br>
-                                            <span class="price-sale h6"><?= formatPrice($product['sale_price']) ?></span>
-                                        <?php else: ?>
-                                            <span class="h6 text-primary"><?= formatPrice($product['price']) ?></span>
-                                        <?php endif; ?>
-                                    </div>
-                                    
-                                    <div class="d-grid gap-2">
-                                        <a href="product_detail.php?id=<?= $product['id'] ?>" 
-                                           class="btn btn-outline-primary btn-sm">Xem chi tiết</a>
-                                        
-                                        <?php if (isLoggedIn()): ?>
-                                            <button class="btn btn-primary btn-sm add-to-cart" 
-                                                    data-product-id="<?= $product['id'] ?>">
-                                                <i class="fas fa-cart-plus"></i> Đăng ký khám
-                                            </button>
-                                        <?php else: ?>
-                                            <a href="login.php" class="btn btn-primary btn-sm">
-                                                Đăng nhập để mua
-                                            </a>
-                                        <?php endif; ?>
-                                    </div>
+    <div class="container-xxl py-5 bg-light" id="services">
+        <div class="container">
+            <div class="text-center mx-auto mb-5" style="max-width: 600px;">
+                <p class="d-inline-block border rounded-pill py-1 px-4 text-primary bg-white">Dịch vụ</p>
+                <h1 style="color: #103095;">Các Gói Khám Nổi Bật</h1>
+            </div>
+
+            <div class="row g-4">
+                <?php if (count($services) > 0): ?>
+                    <?php foreach ($services as $sv): ?>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="service-item bg-white rounded h-100 p-4 border text-center">
+                                <div class="d-inline-block rounded-circle bg-light p-2 mb-4">
+                                    <img class="rounded-circle" src="<?= htmlspecialchars($sv['image_url'] ?? 'https://via.placeholder.com/100') ?>"
+                                        style="width: 100px; height: 100px; object-fit: cover;" alt="">
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </div>
-    </div> -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-        <div class="container py-5" style="background-color: #F0F5FA;">
-            <h2 class="text-center mb-5" style="color: #103095; font-weight: bold;">Dịch vụ</h2>
+                                <h5 class="mb-3"><?= htmlspecialchars($sv['name']) ?></h5>
+                                <p class="text-primary fw-bold fs-5"><?= number_format($sv['price'], 0, ',', '.') ?> đ</p>
+                                <p class="text-muted small mb-4"><?= mb_strimwidth($sv['description'] ?? '', 0, 70, "...") ?></p>
 
-            <div class="row">
-                <div class="col-lg-7 col-md-12">
-                    <div class="row g-3">
-                        <div class="col-md-4 col-4 mb-3">
-                            <div class="service-card active" onclick="changeService('thankinh', this)">
-                                <i class="fas fa-plus-square fa-2x mb-2"></i>
-                                <h6>Thần kinh</h6>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4 col-4 mb-3">
-                            <div class="service-card" onclick="changeService('timmach', this)">
-                                <i class="fas fa-heartbeat fa-2x mb-2"></i>
-                                <h6>Tim mạch</h6>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4 col-4 mb-3">
-                            <div class="service-card" onclick="changeService('chanthuong', this)">
-                                <i class="fas fa-stethoscope fa-2x mb-2"></i>
-                                <h6>Chấn thương<br>chỉnh hình</h6>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4 col-4 mb-3">
-                            <div class="service-card" onclick="changeService('phauthuat', this)">
-                                <i class="fas fa-syringe fa-2x mb-2"></i>
-                                <h6>Phẫu thuật</h6>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4 col-4 mb-3">
-                            <div class="service-card" onclick="changeService('nhakhoa', this)">
-                                <i class="fas fa-hospital fa-2x mb-2"></i>
-                                <h6>Nha khoa</h6>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4 col-4 mb-3">
-                            <div class="service-card" onclick="changeService('chandoan', this)">
-                                <i class="fas fa-wave-square fa-2x mb-2"></i>
-                                <h6>Chẩn đoán hình<br>ảnh</h6>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4 col-4 mb-3">
-                            <div class="service-card" onclick="changeService('tietnieu', this)">
-                                <i class="fas fa-clipboard-list fa-2x mb-2"></i>
-                                <h6>Tiết niệu</h6>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4 col-4 mb-3">
-                            <div class="service-card" onclick="changeService('noikhoa', this)">
-                                <i class="fas fa-band-aid fa-2x mb-2"></i>
-                                <h6>Nội khoa</h6>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4 col-4 mb-3">
-                            <div class="service-card" onclick="changeService('xemthem', this)">
-                                <i class="fas fa-briefcase-medical fa-2x mb-2"></i>
-                                <h6>Xem thêm</h6>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="col-lg-5 col-md-12">
-                    <div id="service-detail-panel" class="p-4 h-100 d-flex flex-column justify-content-center">
-                        <h3 class="text-primary font-weight-bold mb-4">Khoa Thần kinh</h3>
-                        <ul class="list-unstyled text-secondary" style="line-height: 2.5;">
-                            <li><i class="fas fa-crosshairs text-primary mr-2 small"></i> Tư vấn chuyên khoa thần kinh</li>
-                            <li><i class="fas fa-crosshairs text-primary mr-2 small"></i> Chăm sóc toàn diện não bộ và thần kinh</li>
-                            <li><i class="fas fa-crosshairs text-primary mr-2 small"></i> Dịch vụ chẩn đoán hình ảnh tiên tiến</li>
-                            <li><i class="fas fa-crosshairs text-primary mr-2 small"></i> Điều trị động kinh và co giật</li>
-                            <li><i class="fas fa-crosshairs text-primary mr-2 small"></i> Đánh giá trí nhớ và nhận thức</li>
-                            <li><i class="fas fa-crosshairs text-primary mr-2 small"></i> Quản lý rối loạn vận động</li>
-                        </ul>
-                        <a href="booking.php" class="btn btn-primary rounded-pill mt-3 px-4 py-2 font-weight-bold" style="width: fit-content;">Đặt lịch khám ngay</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <section class="container py-5">
-            <div class="text-center mb-5">
-                <h3 style="color: #103095; font-weight: bold;">Đội ngũ Chuyên gia</h3>
-                <p class="text-muted">Các bác sĩ đầu ngành, giàu kinh nghiệm và tận tâm</p>
-            </div>
-
-            <div class="row">
-                <div class="row">
-                    <?php foreach ($doctors as $doctor): ?>
-                        <div class="col-md-3 col-sm-6 mb-4">
-                            <div class="doctor-card text-center p-4 h-100">
-                                <img src="<?= htmlspecialchars($doctor['image']) ?>"
-                                    alt="<?= htmlspecialchars($doctor['name']) ?>"
-                                    class="doctor-img mb-3"
-                                    style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;">
-
-                                <h5 class="font-weight-bold text-dark mb-1">
-                                    <?= htmlspecialchars($doctor['name']) ?>
-                                </h5>
-
-                                <p class="text-primary small mb-3">
-                                    <?= htmlspecialchars($doctor['address']) ?>
-                                </p>
-
-                                <a href="booking.php?doctor_id=<?= $doctor['id'] ?>" class="btn btn-outline-primary btn-sm rounded-pill px-3">
-                                    Đặt lịch
+                                <a class="btn btn-outline-primary rounded-pill px-4" href="booking.php?note=Đăng ký: <?= urlencode($sv['name']) ?>">
+                                    Đặt lịch <i class="fa fa-arrow-right ms-2"></i>
                                 </a>
                             </div>
                         </div>
                     <?php endforeach; ?>
-                </div>
-
-                <div class="col-md-3 col-sm-6 mb-4">
-                    <div class="doctor-card text-center p-4">
-                        <img src="https://via.placeholder.com/150" alt="Bác sĩ B" class="doctor-img mb-3">
-                        <h5 class="font-weight-bold text-dark mb-1">ThS.BS Trần Thị B</h5>
-                        <p class="text-primary small mb-3">Khoa Tim mạch</p>
-                        <button class="btn btn-outline-primary btn-sm rounded-pill px-3">Đặt lịch</button>
-                    </div>
-                </div>
-
-                <div class="col-md-3 col-sm-6 mb-4">
-                    <div class="doctor-card text-center p-4">
-                        <img src="https://via.placeholder.com/150" alt="Bác sĩ C" class="doctor-img mb-3">
-                        <h5 class="font-weight-bold text-dark mb-1">BSCKII Lê Văn C</h5>
-                        <p class="text-primary small mb-3">Chấn thương chỉnh hình</p>
-                        <button class="btn btn-outline-primary btn-sm rounded-pill px-3">Đặt lịch</button>
-                    </div>
-                </div>
-
-                <div class="col-md-3 col-sm-6 mb-4">
-                    <div class="doctor-card text-center p-4">
-                        <img src="https://via.placeholder.com/150" alt="Bác sĩ D" class="doctor-img mb-3">
-                        <h5 class="font-weight-bold text-dark mb-1">BS Phạm Thị D</h5>
-                        <p class="text-primary small mb-3">Nha khoa</p>
-                        <button class="btn btn-outline-primary btn-sm rounded-pill px-3">Đặt lịch</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="py-5" style="background-color: #F0F5FA;">
-            <div class="container">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 style="color: #103095; font-weight: bold;">Tin tức & Sự kiện</h3>
-                    <a href="#" class="text-primary font-weight-bold">Xem tất cả <i class="fas fa-arrow-right ml-1"></i></a>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4 mb-4">
-                        <div class="news-card bg-white h-100">
-                            <img src="https://via.placeholder.com/400x250" class="w-100" alt="Tin tuc 1">
-                            <div class="p-3">
-                                <small class="text-muted"><i class="far fa-calendar-alt mr-1"></i> 20/01/2026</small>
-                                <h5 class="mt-2 font-weight-bold text-dark">Dấu hiệu sớm của bệnh đột quỵ bạn cần biết</h5>
-                                <p class="text-muted small mt-2">Đột quỵ có thể xảy ra với bất kỳ ai. Hãy tìm hiểu các dấu hiệu nhận biết sớm...</p>
-                                <a href="#" class="text-primary font-weight-bold small">Đọc tiếp</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 mb-4">
-                        <div class="news-card bg-white h-100">
-                            <img src="https://via.placeholder.com/400x250" class="w-100" alt="Tin tuc 2">
-                            <div class="p-3">
-                                <small class="text-muted"><i class="far fa-calendar-alt mr-1"></i> 18/01/2026</small>
-                                <h5 class="mt-2 font-weight-bold text-dark">Lịch nghỉ tết Nguyên Đán 2026</h5>
-                                <p class="text-muted small mt-2">Phòng khám xin thông báo lịch nghỉ tết và lịch trực cấp cứu trong dịp lễ...</p>
-                                <a href="#" class="text-primary font-weight-bold small">Đọc tiếp</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 mb-4">
-                        <div class="news-card bg-white h-100">
-                            <img src="https://via.placeholder.com/400x250" class="w-100" alt="Tin tuc 3">
-                            <div class="p-3">
-                                <small class="text-muted"><i class="far fa-calendar-alt mr-1"></i> 15/01/2026</small>
-                                <h5 class="mt-2 font-weight-bold text-dark">Gói khám sức khỏe tổng quát ưu đãi 30%</h5>
-                                <p class="text-muted small mt-2">Chương trình tri ân khách hàng nhân dịp đầu năm mới với nhiều ưu đãi...</p>
-                                <a href="#" class="text-primary font-weight-bold small">Đọc tiếp</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <button class="chat-toggle-btn" onclick="toggleChat()">
-            <i class="fas fa-comment-dots"></i>
-        </button>
-
-        <div id="chat-widget" class="chat-widget">
-            <div class="chat-header">
-                <div class="d-flex align-items-center">
-                    <div class="chat-avatar mr-2">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <div>
-                        <h6 class="mb-0 font-weight-bold">Trợ lý ảo BHH</h6>
-                        <small class="text-white-50">Hỗ trợ 24/7</small>
-                    </div>
-                </div>
-                <span class="close-chat" onclick="toggleChat()">&times;</span>
-            </div>
-
-            <div class="chat-body" id="chat-body">
-                <div class="message bot-message">
-                    Xin chào! Tôi là trợ lý ảo của phòng khám. Tôi có thể giúp gì cho bạn? 🏥
-                </div>
-
-                <div class="chat-options mt-3">
-                    <button class="option-btn" onclick="botReply('price')">💰 Bảng giá khám</button>
-                    <button class="option-btn" onclick="botReply('address')">📍 Địa chỉ ở đâu?</button>
-                    <button class="option-btn" onclick="botReply('book')">📅 Đặt lịch thế nào?</button>
-                    <button class="option-btn" onclick="botReply('human')">👨‍⚕️ Gặp tư vấn viên</button>
-                </div>
-            </div>
-
-            <div class="chat-footer">
-                <input type="text" id="chat-input" placeholder="Nhập tin nhắn..." onkeypress="handleEnter(event)">
-
-                <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+                <?php else: ?>
+                    <div class="col-12 text-center text-muted">Đang cập nhật danh sách dịch vụ...</div>
+                <?php endif; ?>
             </div>
         </div>
-        <div id="consultation-modal" class="modal-overlay">
-            <div class="modal-content">
-                <span class="close-modal" onclick="closeModal()">&times;</span>
-                <h3 class="text-primary font-weight-bold text-center mb-4">Đăng ký tư vấn miễn phí</h3>
+    </div>
 
-                <form>
-                    <div class="form-group mb-3">
-                        <input type="text" class="form-control" placeholder="Họ và tên của bạn" required>
+
+    <div class="container-xxl py-5" id="doctors">
+        <div class="container">
+            <div class="text-center mx-auto mb-5">
+                <h1 style="color: #103095;">Đội Ngũ Chuyên Gia</h1>
+                <p class="text-muted">Các bác sĩ giàu kinh nghiệm sẵn sàng hỗ trợ bạn</p>
+            </div>
+
+            <div class="row g-4">
+                <?php foreach ($doctors as $doc): ?>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="doctor-card bg-white rounded overflow-hidden shadow-sm text-center border">
+                            <div class="p-4">
+                                <img class="img-fluid rounded-circle mb-3" src="<?= htmlspecialchars($doc['image']) ?>" alt="" style="width: 120px; height: 120px; object-fit: cover;">
+                                <h5 class="fw-bold mb-1"><?= htmlspecialchars($doc['name']) ?></h5>
+                                <small class="text-primary"><?= htmlspecialchars($doc['address']) ?></small>
+                            </div>
+                            <div class="d-grid p-3 bg-light">
+                                <a class="btn btn-primary btn-sm rounded-pill" href="booking.php?doctor_id=<?= $doc['id'] ?>">Đặt hẹn khám</a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group mb-3">
-                        <input type="text" class="form-control" placeholder="Số điện thoại" required>
-                    </div>
-                    <div class="form-group mb-3">
-                        <textarea class="form-control" rows="4" placeholder="Bạn cần tư vấn về vấn đề gì?"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-block w-100 font-weight-bold">GỬI YÊU CẦU</button>
-                </form>
+                <?php endforeach; ?>
             </div>
         </div>
-        <!-- Footer -->
-        <footer style="background: #232323; color: #fff; padding: 40px 0 0 0; font-family: Arial, sans-serif;">
-            <div class="container" style="max-width: 1200px; margin: auto;">
-                <div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
-                    <!-- Logo & Contact -->
-                    <div style="flex: 1 1 320px; margin-bottom: 30px;">
-                        <!-- Đã bỏ logo Maxx Sport và báo cáo Bộ Công Thương -->
-                        <div style="margin-bottom: 12px;">
-                            <i class="fas fa-map-marker-alt"></i> Địa chỉ:Ba chấm , Thanh Hóa
-                        </div>
-                        <div style="margin-bottom: 12px;">
-                            <i class="fas fa-phone"></i> Số điện thoại: 096969969
-                        </div>
-                        <div style="margin-bottom: 12px;">
-                            <i class="fas fa-envelope"></i> Email: blabla@gmail.com
-                        </div>
-                        <div style="font-size: 13px; color: #bbb; margin-top: 18px;">
-                            © 2023 BHH.
-                        </div>
-                    </div>
-                    <!-- Chính sách -->
-                    <div style="flex: 1 1 180px; margin-bottom: 30px;">
-                        <h5 style="margin-bottom: 18px;">CHÍNH SÁCH</h5>
-                        <ul style="list-style: none; padding: 0; font-size: 15px;">
-                            <li><a href="#" style="color: #fff; text-decoration: none;">Chính sách bảo mật</a></li>
-                            <li><a href="#" style="color: #fff; text-decoration: none;">Quy định sử dụng</a></li>
-                            <li><a href="#" style="color: #fff; text-decoration: none;">Chính sách thanh toán</a></li>
-                            <li><a href="#" style="color: #fff; text-decoration: none;">Chính sách vận chuyển</a></li>
-                            <li><a href="#" style="color: #fff; text-decoration: none;">Đổi trả hàng online</a></li>
-                            <li><a href="#" style="color: #fff; text-decoration: none;">Đổi trả hàng tại shop</a></li>
-                        </ul>
-                    </div>
-                    <!-- Về chúng tôi -->
-                    <div style="flex: 1 1 180px; margin-bottom: 30px;">
-                        <h5 style="margin-bottom: 18px;">VỀ CHÚNG TÔI</h5>
-                        <ul style="list-style: none; padding: 0; font-size: 15px;">
-                            <li><a href="#" style="color: #fff; text-decoration: none;">Giới thiệu</a></li>
-                            <li><a href="#" style="color: #fff; text-decoration: none;">Hướng dẫn mua hàng online</a></li>
-                            <li><a href="#" style="color: #fff; text-decoration: none;">Tuyển dụng</a></li>
-                            <li><a href="#" style="color: #fff; text-decoration: none;">Hệ thống cửa hàng</a></li>
-                            <li><a href="#" style="color: #fff; text-decoration: none;">Tuyển đại lý</a></li>
-                        </ul>
-                    </div>
-                    <!-- Đăng ký nhận tin -->
-                    <div style="flex: 1 1 220px; margin-bottom: 30px;">
-                        <h5 style="margin-bottom: 18px;">ĐĂNG KÝ NHẬN TIN</h5>
-                        <div style="margin-bottom: 10px; font-size: 15px;">Bạn muốn nhận khuyến mãi đặc biệt?<br>Đăng ký ngay.</div>
-                        <form style="display: flex; margin-bottom: 14px;">
-                            <input type="email" placeholder="Nhập địa chỉ email" style="flex:1; padding: 8px 12px; border-radius: 30px 0 0 30px; border: none;">
-                            <button type="submit" style="background: #fff; color: #232323; border: none; border-radius: 0 30px 30px 0; padding: 8px 22px; font-weight: bold;">Đăng ký</button>
-                        </form>
-                        <div style="display: flex; gap: 12px; margin-top: 8px;">
-                            <a href="#" style="color: #3b5998;"><i class="fab fa-facebook fa-lg"></i></a>
-                            <a href="#" style="color: #0084ff;"><i class="fab fa-zalo fa-lg"></i></a>
-                            <a href="#" style="color: #e4405f;"><i class="fab fa-instagram fa-lg"></i></a>
-                            <a href="#" style="color: #ff0000;"><i class="fab fa-youtube fa-lg"></i></a>
-                            <a href="#" style="color: #000;"><i class="fab fa-tiktok fa-lg"></i></a>
-                        </div>
+    </div>
+
+
+    <div class="container-fluid bg-dark text-light footer mt-5 pt-5" id="footer">
+        <div class="container py-5">
+            <div class="row g-5">
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-white mb-4">Phòng Khám BHH</h5>
+                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>Số 10, Đường ABC, TP. Thanh Hóa</p>
+                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>0969 699 69</p>
+                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>tuvan@bhhclinic.com</p>
+                    <div class="d-flex pt-2">
+                        <a class="btn btn-outline-light btn-social rounded-circle me-1" href=""><i class="fab fa-twitter"></i></a>
+                        <a class="btn btn-outline-light btn-social rounded-circle me-1" href=""><i class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-outline-light btn-social rounded-circle me-1" href=""><i class="fab fa-youtube"></i></a>
                     </div>
                 </div>
-                <!-- Dòng cuối cùng -->
-                <div style="display: flex; align-items: center; justify-content: flex-end; margin-top: 30px; padding-bottom: 18px;">
-                    <div>
-                        <button style="background: #002b5c; color: #fff; border: none; border-radius: 6px; padding: 8px 18px; font-weight: bold; font-size: 15px;">
-                            <i class="fas fa-bell"></i> HÀNG MỚI
-                        </button>
-                    </div>
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-white mb-4">Liên kết nhanh</h5>
+                    <a class="btn btn-link text-white-50" href="#services">Gói khám sức khỏe</a>
+                    <a class="btn btn-link text-white-50" href="#doctors">Đội ngũ bác sĩ</a>
+                    <a class="btn btn-link text-white-50" href="booking.php">Đặt lịch hẹn</a>
+                    <a class="btn btn-link text-white-50" href="#">Chính sách bảo mật</a>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-white mb-4">Giờ làm việc</h5>
+                    <p class="mb-1">Thứ 2 - Thứ 6: 08:00 - 17:00</p>
+                    <p class="mb-1">Thứ 7: 08:00 - 12:00</p>
+                    <p class="text-warning mb-0">Chủ nhật: Nghỉ (Cấp cứu 24/7)</p>
                 </div>
             </div>
-        </footer>
+        </div>
+        <div class="container">
+            <div class="copyright text-center py-4 border-top border-secondary">
+                <p class="mb-0">&copy; <a class="border-bottom text-white" href="#">BHH Clinic</a>. All Rights Reserved.</p>
+            </div>
+        </div>
+    </div>
 
+
+    !-- NÚT MỞ CHAT -->
+    <button class="chat-toggle-btn" onclick="toggleChat()">
+        <i class="fas fa-comment-dots"></i>
+    </button>
+
+    <!-- KHUNG CHAT -->
+    <div id="chat-widget" class="chat-widget">
+
+        <!-- HEADER -->
+        <div class="chat-header">
+            <div class="d-flex align-items-center">
+                <div class="me-2">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div>
+                    <h6 class="mb-0 fw-bold">Trợ lý ảo BHH</h6>
+                    <small class="text-white-50">Hỗ trợ 24/7</small>
+                </div>
+            </div>
+            <span onclick="toggleChat()" style="cursor:pointer;">&times;</span>
+        </div>
+
+        <!-- BODY -->
+        <div class="chat-body" id="chat-body">
+
+            <div class="message bot-message">
+                Xin chào! Tôi là trợ lý ảo của phòng khám. Tôi có thể giúp gì cho bạn? 🏥
+            </div>
+
+            <div class="chat-options mt-3">
+                <button class="option-btn" onclick="botReply('price')">
+                    💰 Bảng giá khám
+                </button>
+                <button class="option-btn" onclick="botReply('address')">
+                    📍 Địa chỉ ở đâu?
+                </button>
+                <button class="option-btn" onclick="botReply('book')">
+                    📅 Đặt lịch thế nào?
+                </button>
+                <button class="option-btn" onclick="botReply('human')">
+                    👨‍⚕️ Gặp tư vấn viên
+                </button>
+            </div>
+
+        </div>
+
+        <!-- FOOTER -->
+        <div class="chat-footer">
+            <input
+                type="text"
+                id="chat-input"
+                placeholder="Nhập tin nhắn..."
+                onkeypress="handleEnter(event)">
+            <button onclick="sendMessage()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
 
     </div>
+
     <script src="js/script.js"></script>
+
 </body>
 
 </html>

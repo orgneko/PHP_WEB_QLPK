@@ -1,8 +1,6 @@
 <?php
 // chat_ai.php
-
-// 1. Cấu hình API Key (Dán key của bạn vào đây)
-$apiKey = "AIzaSyDphvXfXu4rEKSz-ti6utad0Iu_waUDnxg";
+require_once 'config_key.php';
 
 // 2. Nhận tin nhắn từ file Javascript gửi lên
 $input = json_decode(file_get_contents('php://input'), true);
