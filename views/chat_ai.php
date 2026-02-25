@@ -1,6 +1,6 @@
 <?php
 // chat_ai.php
-require_once 'config_key.php';
+require_once '../config/config_key.php';
 
 // 2. Nhận tin nhắn từ file Javascript gửi lên
 $input = json_decode(file_get_contents('php://input'), true);

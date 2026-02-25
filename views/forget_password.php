@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once '../config/config.php';
 $message = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -174,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 padding: 30px 20px;
                 margin: 10px;
             }
-            
+
             h2 {
                 font-size: 24px;
             }
@@ -201,33 +202,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="icon">🔒</div>
         <h2>Quên mật khẩu</h2>
         <p class="subtitle">Nhập email của bạn để nhận hướng dẫn đặt lại mật khẩu</p>
-        
+
         <?php if ($message): ?>
             <div class="message <?php echo strpos($message, 'không tồn tại') !== false ? 'error' : 'success'; ?>">
                 <?php echo htmlspecialchars($message); ?>
             </div>
         <?php endif; ?>
-        
+
         <form method="post" id="forgotForm">
             <div class="form-group">
                 <label for="email">Địa chỉ Email</label>
-                <input type="email" id="email" name="email" required 
-                       placeholder="Nhập email của bạn" 
-                       value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>">
+                <input type="email" id="email" name="email" required
+                    placeholder="Nhập email của bạn"
+                    value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>">
             </div>
             <button type="submit" class="btn" id="submitBtn">Gửi yêu cầu</button>
         </form>
-        
+
         <a href="login.php" class="back-link">← Quay lại đăng nhập</a>
     </div>
 
@@ -239,4 +246,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
     </script>
 </body>
+
 </html>

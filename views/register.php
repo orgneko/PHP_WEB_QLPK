@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once '../config/config.php';
 
 $error = '';
 $success = '';
@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $full_name = sanitizeInput($_POST['full_name']);
     $phone = sanitizeInput($_POST['phone']);
     $address = sanitizeInput($_POST['address']);
-    
+
     // Validate input
     if (empty($username) || empty($email) || empty($password) || empty($full_name)) {
         $error = 'Vui lòng nhập đầy đủ thông tin bắt buộc!';
@@ -26,14 +26,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Check if username or email already exists
         $stmt = $pdo->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
         $stmt->execute([$username, $email]);
-        
+
         if ($stmt->rowCount() > 0) {
             $error = 'Tên đăng nhập hoặc email đã tồn tại!';
         } else {
             // Create new user
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
             $stmt = $pdo->prepare("INSERT INTO users (username, email, password, full_name, phone, address) VALUES (?, ?, ?, ?, ?, ?)");
-            
+
             if ($stmt->execute([$username, $email, $hashed_password, $full_name, $phone, $address])) {
                 $success = 'Đăng ký thành công! Vui lòng đăng nhập.';
             } else {
@@ -46,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -60,30 +61,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             padding: 40px 0;
         }
+
         .register-card {
             background: white;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             overflow: hidden;
         }
+
         .register-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 30px;
             text-align: center;
         }
+
         .register-body {
             padding: 40px;
         }
+
         .form-control {
             border-radius: 10px;
             border: 2px solid #e9ecef;
             padding: 12px 15px;
         }
+
         .form-control:focus {
             border-color: #667eea;
             box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
         }
+
         .btn-register {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
@@ -91,15 +98,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             padding: 12px 30px;
             font-weight: bold;
         }
+
         .btn-register:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
+
         .required {
             color: #dc3545;
         }
     </style>
 </head>
+
 <body>
     <div class="register-container">
         <div class="container">
@@ -110,21 +120,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <h3><i class="fas fa-running"></i> SportWear Shop</h3>
                             <p class="mb-0">Đăng ký tài khoản mới</p>
                         </div>
-                        
+
                         <div class="register-body">
                             <?php if ($error): ?>
                                 <div class="alert alert-danger" role="alert">
                                     <i class="fas fa-exclamation-triangle"></i> <?= $error ?>
                                 </div>
                             <?php endif; ?>
-                            
+
                             <?php if ($success): ?>
                                 <div class="alert alert-success" role="alert">
                                     <i class="fas fa-check-circle"></i> <?= $success ?>
                                     <br><a href="login.php" class="alert-link">Đăng nhập ngay</a>
                                 </div>
                             <?php endif; ?>
-                            
+
                             <form method="POST">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -134,13 +144,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             </label>
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                                <input type="text" class="form-control" id="username" name="username" 
-                                                       value="<?= isset($_POST['username']) ? htmlspecialchars($_POST['username']) : '' ?>" 
-                                                       required>
+                                                <input type="text" class="form-control" id="username" name="username"
+                                                    value="<?= isset($_POST['username']) ? htmlspecialchars($_POST['username']) : '' ?>"
+                                                    required>
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="email" class="form-label">
@@ -148,35 +158,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             </label>
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                                <input type="email" class="form-control" id="email" name="email" 
-                                                       value="<?= isset($_POST['email']) ? htmlspecialchars($_POST['email']) : '' ?>" 
-                                                       required>
+                                                <input type="email" class="form-control" id="email" name="email"
+                                                    value="<?= isset($_POST['email']) ? htmlspecialchars($_POST['email']) : '' ?>"
+                                                    required>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="mb-3">
                                     <label for="full_name" class="form-label">
                                         Họ và tên <span class="required">*</span>
                                     </label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-                                        <input type="text" class="form-control" id="full_name" name="full_name" 
-                                               value="<?= isset($_POST['full_name']) ? htmlspecialchars($_POST['full_name']) : '' ?>" 
-                                               required>
+                                        <input type="text" class="form-control" id="full_name" name="full_name"
+                                            value="<?= isset($_POST['full_name']) ? htmlspecialchars($_POST['full_name']) : '' ?>"
+                                            required>
                                     </div>
                                 </div>
-                                
+
                                 <div class="mb-3">
                                     <label for="phone" class="form-label">Số điện thoại</label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                                        <input type="tel" class="form-control" id="phone" name="phone" 
-                                               value="<?= isset($_POST['phone']) ? htmlspecialchars($_POST['phone']) : '' ?>">
+                                        <input type="tel" class="form-control" id="phone" name="phone"
+                                            value="<?= isset($_POST['phone']) ? htmlspecialchars($_POST['phone']) : '' ?>">
                                     </div>
                                 </div>
-                                
+
                                 <div class="mb-3">
                                     <label for="address" class="form-label">Địa chỉ</label>
                                     <div class="input-group">
@@ -184,7 +194,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <textarea class="form-control" id="address" name="address" rows="2"><?= isset($_POST['address']) ? htmlspecialchars($_POST['address']) : '' ?></textarea>
                                     </div>
                                 </div>
-                                
+
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-3">
@@ -198,7 +208,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <div class="form-text">Mật khẩu phải có ít nhất 6 ký tự</div>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="confirm_password" class="form-label">
@@ -211,16 +221,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="d-grid gap-2">
                                     <button type="submit" class="btn btn-primary btn-register">
                                         <i class="fas fa-user-plus"></i> Đăng ký
                                     </button>
                                 </div>
                             </form>
-                            
+
                             <div class="text-center mt-4">
-                                <p class="mb-0">Đã có tài khoản? 
+                                <p class="mb-0">Đã có tài khoản?
                                     <a href="login.php" class="text-decoration-none">Đăng nhập ngay</a>
                                 </p>
                                 <p class="mt-2">
@@ -242,7 +252,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         document.getElementById('confirm_password').addEventListener('input', function() {
             const password = document.getElementById('password').value;
             const confirmPassword = this.value;
-            
+
             if (password !== confirmPassword) {
                 this.setCustomValidity('Mật khẩu xác nhận không khớp');
             } else {
@@ -251,4 +261,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
     </script>
 </body>
+
 </html>

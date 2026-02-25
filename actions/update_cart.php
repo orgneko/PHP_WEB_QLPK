@@ -1,7 +1,7 @@
 <?php
 // filepath: c:\xampp\htdocs\sportshop1\update_cart.php
 session_start();
-require_once 'config.php';
+require_once '../config/config.php';
 
 header('Content-Type: application/json');
 

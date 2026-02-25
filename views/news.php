@@ -1,28 +1,79 @@
 <?php
-require_once 'config.php';
+require_once '../config/config.php';
 ?>
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <title>Tin tức & Khuyến mãi - SportWear Shop</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { background: #f6f8fa; font-family: 'Roboto', Arial, sans-serif; }
-        .news-section { margin: 40px auto; max-width: 1100px; }
-        .news-title { font-size: 2rem; font-weight: bold; color: #232323; margin-bottom: 24px; text-align: center; }
-        .news-card { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 28px; display: flex; overflow: hidden; }
-        .news-img { width: 180px; height: 130px; object-fit: cover; border-radius: 12px 0 0 12px; }
-        .news-content { padding: 18px 22px; flex: 1; }
-        .news-content h5 { font-size: 1.1rem; font-weight: bold; margin-bottom: 8px; }
-        .news-content .desc { color: #444; font-size: 15px; }
+        body {
+            background: #f6f8fa;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+
+        .news-section {
+            margin: 40px auto;
+            max-width: 1100px;
+        }
+
+        .news-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #232323;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .news-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 28px;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .news-img {
+            width: 180px;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 12px 0 0 12px;
+        }
+
+        .news-content {
+            padding: 18px 22px;
+            flex: 1;
+        }
+
+        .news-content h5 {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .news-content .desc {
+            color: #444;
+            font-size: 15px;
+        }
+
         @media (max-width: 700px) {
-            .news-card { flex-direction: column; }
-            .news-img { width: 100%; height: 180px; border-radius: 12px 12px 0 0; }
+            .news-card {
+                flex-direction: column;
+            }
+
+            .news-img {
+                width: 100%;
+                height: 180px;
+                border-radius: 12px 12px 0 0;
+            }
         }
     </style>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(90deg, #007bff 0%, #43cea2 100%);">
         <div class="container">
@@ -77,4 +128,5 @@ require_once 'config.php';
         </div>
     </div>
 </body>
+
 </html>

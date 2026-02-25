@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once '../config/config.php';
 if (!isLoggedIn()) redirect('login.php');
 $user_id = $_SESSION['user_id'];
 $message = '';
@@ -23,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <title>Trang tài khoản</title>
@@ -34,21 +35,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin: 0;
             padding: 0;
         }
+
         .account-header {
             background: #fff;
             border-bottom: 1px solid #eee;
             padding: 24px 0 16px 0;
         }
+
         .account-header .container {
             max-width: 1200px;
             margin: auto;
             padding: 0 16px;
         }
+
         .account-title {
             font-size: 2rem;
             font-weight: bold;
             color: #222;
         }
+
         .account-main {
             max-width: 1200px;
             margin: 32px auto 0 auto;
@@ -56,60 +61,72 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             gap: 32px;
             padding: 0 16px;
         }
+
         .account-sidebar {
             width: 260px;
             background: #fff;
             border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
             padding: 24px 18px;
             min-height: 320px;
         }
+
         .account-sidebar h4 {
             font-size: 1.1rem;
             margin-bottom: 18px;
             color: #222;
         }
+
         .account-sidebar ul {
             list-style: none;
             padding: 0;
             margin: 0;
         }
+
         .account-sidebar li {
             margin-bottom: 14px;
         }
+
         .account-sidebar a {
             color: #333;
             text-decoration: none;
             font-size: 1rem;
             transition: color 0.2s;
         }
+
         .account-sidebar a:hover {
             color: #4CAF50;
         }
+
         .account-content {
             flex: 1;
             background: #fff;
             border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
             padding: 32px 28px 24px 28px;
             min-height: 320px;
         }
+
         .account-content h3 {
             font-size: 1.2rem;
             margin-bottom: 18px;
             color: #222;
         }
+
         .account-info {
             margin-bottom: 24px;
         }
+
         .account-info label {
             font-weight: 600;
             color: #555;
             margin-right: 8px;
         }
+
         .account-info span {
             color: #222;
         }
+
         .message {
             background: #d4edda;
             color: #155724;
@@ -119,9 +136,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border: 1px solid #c3e6cb;
             font-size: 15px;
         }
+
         .edit-form {
             margin-top: 18px;
         }
+
         .edit-form input[type="text"] {
             width: 100%;
             padding: 9px 12px;
@@ -131,6 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-bottom: 12px;
             background: #f7fafc;
         }
+
         .edit-form button {
             background: #4CAF50;
             color: #fff;
@@ -142,15 +162,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             cursor: pointer;
             transition: background 0.2s;
         }
+
         .edit-form button:hover {
             background: #388e3c;
         }
+
         @media (max-width: 900px) {
-            .account-main { flex-direction: column; }
-            .account-sidebar { width: 100%; margin-bottom: 18px; }
+            .account-main {
+                flex-direction: column;
+            }
+
+            .account-sidebar {
+                width: 100%;
+                margin-bottom: 18px;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="account-header">
         <div class="container">
@@ -188,4 +217,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 </body>
+
 </html>

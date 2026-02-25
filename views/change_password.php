@@ -1,6 +1,6 @@
 <?php
 
-require_once 'config.php';
+require_once '../config/config.php';
 if (!isLoggedIn()) redirect('login.php');
 $user_id = $_SESSION['user_id'];
 $message = '';
@@ -31,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <title>Đổi mật khẩu</title>
@@ -42,14 +43,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             min-height: 100vh;
             margin: 0;
         }
+
         .change-password-container {
             max-width: 410px;
             margin: 60px auto;
             background: #fff;
             border-radius: 14px;
-            box-shadow: 0 6px 32px rgba(37,99,235,0.08);
+            box-shadow: 0 6px 32px rgba(37, 99, 235, 0.08);
             padding: 38px 32px 28px 32px;
         }
+
         h2 {
             text-align: center;
             margin-bottom: 28px;
@@ -57,9 +60,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-weight: 700;
             letter-spacing: 1px;
         }
+
         .form-group {
             margin-bottom: 20px;
         }
+
         label {
             font-weight: 600;
             color: #374151;
@@ -67,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-bottom: 7px;
             letter-spacing: 0.2px;
         }
+
         input[type="password"] {
             width: 100%;
             padding: 10px 13px;
@@ -76,11 +82,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background: #f7fafc;
             transition: border-color 0.2s;
         }
+
         input[type="password"]:focus {
             border-color: #2563eb;
             outline: none;
             background: #fff;
         }
+
         button {
             background: linear-gradient(90deg, #2563eb 60%, #4CAF50 100%);
             color: #fff;
@@ -92,12 +100,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-weight: 600;
             cursor: pointer;
             margin-top: 8px;
-            box-shadow: 0 2px 8px rgba(37,99,235,0.07);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.07);
             transition: background 0.2s;
         }
+
         button:hover {
             background: linear-gradient(90deg, #1e40af 60%, #388e3c 100%);
         }
+
         .message {
             background: #ffeeba;
             color: #856404;
@@ -108,11 +118,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 15px;
             text-align: center;
         }
+
         .success {
             background: #d4edda;
             color: #155724;
             border-color: #c3e6cb;
         }
+
         .back-link {
             display: block;
             text-align: center;
@@ -123,10 +135,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-weight: 500;
             transition: color 0.2s;
         }
+
         .back-link:hover {
             text-decoration: underline;
             color: #1e40af;
         }
+
         @media (max-width: 500px) {
             .change-password-container {
                 padding: 18px 6vw 18px 6vw;
@@ -134,6 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     </style>
 </head>
+
 <body>
     <div class="change-password-container">
         <h2>Đổi mật khẩu</h2>
@@ -160,4 +175,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <a href="profile.php" class="back-link">← Quay lại tài khoản</a>
     </div>
 </body>
+
 </html>

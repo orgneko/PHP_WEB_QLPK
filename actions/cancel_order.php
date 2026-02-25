@@ -9,14 +9,14 @@ if (!isset($_SESSION['user_id'])) {
 
 // Kết nối database
 $host = 'localhost';
-$dbname = 'sportswear_shop';
+$dbname = 'phongkham';
 $username = 'root';
 $password = '';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
+} catch (PDOException $e) {
     die("Lỗi kết nối database: " . $e->getMessage());
 }
 
@@ -57,7 +57,7 @@ if ($order) {
     ");
     $stmt->execute([$order_id]);
     $order_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
     // Tính tổng tiền
     foreach ($order_items as $item) {
         $total_amount += $item['quantity'] * $item['price'];
@@ -97,7 +97,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_cancel'])) {
 
             // Refresh thông tin đơn hàng
             $order['status'] = 'cancelled';
-
         } catch (Exception $e) {
             $pdo->rollback();
             $error = 'Có lỗi xảy ra khi hủy đơn hàng: ' . $e->getMessage();
@@ -111,6 +110,7 @@ $can_cancel = $order && $order['status'] === 'pending';
 
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -134,7 +134,7 @@ $can_cancel = $order && $order['status'] === 'pending';
             margin: 0 auto;
             background: white;
             border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
 
@@ -221,11 +221,25 @@ $can_cancel = $order && $order['status'] === 'pending';
             letter-spacing: 0.5px;
         }
 
-        .status-pending { background: #ffc107; }
-        .status-confirmed { background: #17a2b8; }
-        .status-shipping { background: #007bff; }
-        .status-delivered { background: #28a745; }
-        .status-cancelled { background: #dc3545; }
+        .status-pending {
+            background: #ffc107;
+        }
+
+        .status-confirmed {
+            background: #17a2b8;
+        }
+
+        .status-shipping {
+            background: #007bff;
+        }
+
+        .status-delivered {
+            background: #28a745;
+        }
+
+        .status-cancelled {
+            background: #dc3545;
+        }
 
         .order-details {
             display: grid;
@@ -383,7 +397,7 @@ $can_cancel = $order && $order['status'] === 'pending';
 
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
 
         .btn:disabled {
@@ -422,40 +436,41 @@ $can_cancel = $order && $order['status'] === 'pending';
             .container {
                 margin: 10px;
             }
-            
+
             .content {
                 padding: 20px 15px;
             }
-            
+
             .order-header {
                 flex-direction: column;
                 align-items: flex-start;
             }
-            
+
             .order-details {
                 grid-template-columns: 1fr;
             }
-            
+
             .product-item {
                 flex-direction: column;
                 text-align: center;
             }
-            
+
             .product-image {
                 margin-right: 0;
                 margin-bottom: 10px;
             }
-            
+
             .actions {
                 flex-direction: column;
             }
-            
+
             .btn {
                 width: 100%;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -484,10 +499,10 @@ $can_cancel = $order && $order['status'] === 'pending';
                     <div class="order-header">
                         <div class="order-id">Đơn hàng #<?php echo htmlspecialchars($order['order_code'] ?? $order['id']); ?></div>
                         <div class="order-status status-<?php echo $order['status']; ?>">
-                            <?php 
+                            <?php
                             $status_text = [
                                 'pending' => 'Chờ xác nhận',
-                                'confirmed' => 'Đã xác nhận', 
+                                'confirmed' => 'Đã xác nhận',
                                 'shipping' => 'Đang giao hàng',
                                 'delivered' => 'Đã giao hàng',
                                 'cancelled' => 'Đã hủy'
@@ -520,9 +535,9 @@ $can_cancel = $order && $order['status'] === 'pending';
                         <?php foreach ($order_items as $item): ?>
                             <div class="product-item">
                                 <?php if ($item['product_image']): ?>
-                                    <img src="<?php echo htmlspecialchars($item['product_image']); ?>" 
-                                         alt="<?php echo htmlspecialchars($item['product_name']); ?>" 
-                                         class="product-image">
+                                    <img src="<?php echo htmlspecialchars($item['product_image']); ?>"
+                                        alt="<?php echo htmlspecialchars($item['product_name']); ?>"
+                                        class="product-image">
                                 <?php else: ?>
                                     <div class="product-image" style="display: flex; align-items: center; justify-content: center; color: #999;">
                                         📷
@@ -531,8 +546,8 @@ $can_cancel = $order && $order['status'] === 'pending';
                                 <div class="product-info">
                                     <div class="product-name"><?php echo htmlspecialchars($item['product_name'] ?? 'Dịch vụ không xác định'); ?></div>
                                     <div class="product-details">
-                                        Số lượng: <?php echo $item['quantity']; ?> × 
-                                        <?php echo number_format($item['price'], 0, ',', '.'); ?> VNĐ = 
+                                        Số lượng: <?php echo $item['quantity']; ?> ×
+                                        <?php echo number_format($item['price'], 0, ',', '.'); ?> VNĐ =
                                         <span class="price"><?php echo number_format($item['quantity'] * $item['price'], 0, ',', '.'); ?> VNĐ</span>
                                     </div>
                                 </div>
@@ -573,17 +588,18 @@ $can_cancel = $order && $order['status'] === 'pending';
 
                     <form method="POST" class="cancel-form">
                         <div class="actions">
-                                                        <button type="submit" name="confirm_cancel" class="btn btn-danger">
-                                                            Xác nhận hủy đơn hàng
-                                                        </button>
-                                                        <a href="my_orders.php" class="btn btn-secondary">
-                                                            Hủy bỏ
-                                                        </a>
-                                                    </div>
-                                                </form>
-                                            <?php endif; ?>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
-                            </body>
-                            </html>
+                            <button type="submit" name="confirm_cancel" class="btn btn-danger">
+                                Xác nhận hủy đơn hàng
+                            </button>
+                            <a href="my_orders.php" class="btn btn-secondary">
+                                Hủy bỏ
+                            </a>
+                        </div>
+                    </form>
+                <?php endif; ?>
+            <?php endif; ?>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'config.php';
+require_once '../config/config.php';
 
 // Lấy ID Dịch vụ từ URL
 $product_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -34,6 +34,7 @@ $related_products = $stmt->fetchAll();
 
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,24 +49,48 @@ $related_products = $stmt->fetchAll();
             display: block;
             margin: 0 auto;
         }
-        .product-info { background: #f8f9fa; padding: 20px; border-radius: 10px; }
-        .price-original { text-decoration: line-through; color: #6c757d; }
-        .price-sale { color: #dc3545; font-weight: bold; font-size: 1.5em; }
-        .quantity-input { max-width: 100px; }
-        .related-product-card { transition: transform 0.3s; }
-        .related-product-card:hover { transform: translateY(-5px); }
+
+        .product-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .price-original {
+            text-decoration: line-through;
+            color: #6c757d;
+        }
+
+        .price-sale {
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 1.5em;
+        }
+
+        .quantity-input {
+            max-width: 100px;
+        }
+
+        .related-product-card {
+            transition: transform 0.3s;
+        }
+
+        .related-product-card:hover {
+            transform: translateY(-5px);
+        }
     </style>
 </head>
+
 <body>
     <div class="container my-5">
         <div class="row">
             <!-- Ảnh Dịch vụ -->
             <div class="col-md-6">
-                <img src="<?= htmlspecialchars($product['image_url']) ?>" 
-                     class="img-fluid product-image" 
-                     alt="<?= htmlspecialchars($product['name']) ?>">
+                <img src="<?= htmlspecialchars($product['image_url']) ?>"
+                    class="img-fluid product-image"
+                    alt="<?= htmlspecialchars($product['name']) ?>">
             </div>
-            
+
             <!-- Thông tin Dịch vụ -->
             <div class="col-md-6">
                 <div class="product-info">
@@ -82,9 +107,9 @@ $related_products = $stmt->fetchAll();
                     </nav>
 
                     <h1 class="h2 mb-3"><?= htmlspecialchars($product['name']) ?></h1>
-                    
+
                     <p class="text-muted">Mã Dịch vụ: <?= htmlspecialchars($product['code']) ?></p>
-                    
+
                     <div class="mb-3">
                         <?php if ($product['sale_price']): ?>
                             <div class="price-original h5"><?= number_format($product['price'], 0, ',', '.') ?>đ</div>
@@ -96,8 +121,8 @@ $related_products = $stmt->fetchAll();
 
                     <div class="mb-3">
                         <label class="form-label">Số lượng:</label>
-                        <input type="number" id="quantity" class="form-control quantity-input" 
-                               value="1" min="1" max="<?= $product['stock_quantity'] ?>">
+                        <input type="number" id="quantity" class="form-control quantity-input"
+                            value="1" min="1" max="<?= $product['stock_quantity'] ?>">
                     </div>
 
                     <?php if (isLoggedIn()): ?>
@@ -120,7 +145,7 @@ $related_products = $stmt->fetchAll();
                         <?php if ($product['supplier_name']): ?>
                             <p><strong>Nhà cung cấp:</strong> <?= htmlspecialchars($product['supplier_name']) ?></p>
                         <?php endif; ?>
-                        <p><strong>Tình trạng:</strong> 
+                        <p><strong>Tình trạng:</strong>
                             <?= $product['stock_quantity'] > 0 ? 'Còn hàng' : 'Hết hàng' ?>
                         </p>
                     </div>
@@ -136,9 +161,9 @@ $related_products = $stmt->fetchAll();
                     <?php foreach ($related_products as $related): ?>
                         <div class="col-md-3">
                             <div class="card related-product-card">
-                                <img src="<?= htmlspecialchars($related['image_url']) ?>" 
-                                     class="card-img-top" alt="<?= htmlspecialchars($related['name']) ?>"
-                                     style="height: 200px; object-fit: cover;">
+                                <img src="<?= htmlspecialchars($related['image_url']) ?>"
+                                    class="card-img-top" alt="<?= htmlspecialchars($related['name']) ?>"
+                                    style="height: 200px; object-fit: cover;">
                                 <div class="card-body">
                                     <h5 class="card-title"><?= htmlspecialchars($related['name']) ?></h5>
                                     <p class="card-text">
@@ -149,8 +174,8 @@ $related_products = $stmt->fetchAll();
                                             <span class="price-sale"><?= formatPrice($related['price']) ?></span>
                                         <?php endif; ?>
                                     </p>
-                                    <a href="product_detail.php?id=<?= $related['id'] ?>" 
-                                       class="btn btn-outline-primary">Xem chi tiết</a>
+                                    <a href="product_detail.php?id=<?= $related['id'] ?>"
+                                        class="btn btn-outline-primary">Xem chi tiết</a>
                                 </div>
                             </div>
                         </div>
@@ -161,31 +186,32 @@ $related_products = $stmt->fetchAll();
     </div>
 
     <script>
-    function addToCart() {
-        const quantity = document.getElementById('quantity').value;
-        
-        fetch('add_to_cart.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `product_id=<?= $product_id ?>&quantity=${quantity}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Đã thêm Dịch vụ vào giỏ hàng!');
-            } else {
-                alert('Có lỗi xảy ra: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Có lỗi xảy ra khi Đăng ký khám hàng!');
-        });
-    }
+        function addToCart() {
+            const quantity = document.getElementById('quantity').value;
+
+            fetch('add_to_cart.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `product_id=<?= $product_id ?>&quantity=${quantity}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Đã thêm Dịch vụ vào giỏ hàng!');
+                    } else {
+                        alert('Có lỗi xảy ra: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra khi Đăng ký khám hàng!');
+                });
+        }
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

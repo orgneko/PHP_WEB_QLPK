@@ -9,14 +9,14 @@ if (!isset($_SESSION['user_id'])) {
 
 // Kết nối database (thay đổi thông tin kết nối theo database của bạn)
 $host = 'localhost';
-$dbname = 'sportswear_shop';
+$dbname = 'phongkham';
 $username = 'root';
 $password = '';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
+} catch (PDOException $e) {
     die("Lỗi kết nối database: " . $e->getMessage());
 }
 
@@ -42,32 +42,47 @@ $stmt->execute([$user_id]);
 $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Hàm định dạng trạng thái đơn hàng
-function getStatusText($status) {
-    switch($status) {
-        case 'pending': return 'Chờ xác nhận';
-        case 'confirmed': return 'Đã xác nhận';
-        case 'shipping': return 'Đang giao hàng';
-        case 'delivered': return 'Đã giao hàng';
-        case 'cancelled': return 'Đã hủy';
-        default: return 'Không xác định';
+function getStatusText($status)
+{
+    switch ($status) {
+        case 'pending':
+            return 'Chờ xác nhận';
+        case 'confirmed':
+            return 'Đã xác nhận';
+        case 'shipping':
+            return 'Đang giao hàng';
+        case 'delivered':
+            return 'Đã giao hàng';
+        case 'cancelled':
+            return 'Đã hủy';
+        default:
+            return 'Không xác định';
     }
 }
 
 // Hàm định dạng màu trạng thái
-function getStatusColor($status) {
-    switch($status) {
-        case 'pending': return '#ffc107';
-        case 'confirmed': return '#17a2b8';
-        case 'shipping': return '#007bff';
-        case 'delivered': return '#28a745';
-        case 'cancelled': return '#dc3545';
-        default: return '#6c757d';
+function getStatusColor($status)
+{
+    switch ($status) {
+        case 'pending':
+            return '#ffc107';
+        case 'confirmed':
+            return '#17a2b8';
+        case 'shipping':
+            return '#007bff';
+        case 'delivered':
+            return '#28a745';
+        case 'cancelled':
+            return '#dc3545';
+        default:
+            return '#6c757d';
     }
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -91,7 +106,7 @@ function getStatusColor($status) {
             margin: 0 auto;
             background: white;
             border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
 
@@ -114,7 +129,7 @@ function getStatusColor($status) {
         .box-icon {
             width: 30px;
             height: 30px;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -144,7 +159,7 @@ function getStatusColor($status) {
         }
 
         .info-item {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             padding: 12px 15px;
             border-radius: 8px;
             backdrop-filter: blur(10px);
@@ -175,7 +190,7 @@ function getStatusColor($status) {
         }
 
         .order-card:hover {
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
             transform: translateY(-2px);
         }
 
@@ -276,7 +291,7 @@ function getStatusColor($status) {
 
         .btn:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .empty-state {
@@ -307,47 +322,48 @@ function getStatusColor($status) {
                 margin: 10px;
                 border-radius: 10px;
             }
-            
+
             .header {
                 padding: 20px 15px;
             }
-            
+
             .header h1 {
                 font-size: 24px;
             }
-            
+
             .customer-info {
                 padding: 15px;
             }
-            
+
             .orders-section {
                 padding: 15px;
             }
-            
+
             .order-header {
                 padding: 12px 15px;
                 flex-direction: column;
                 align-items: flex-start;
             }
-            
+
             .order-body {
                 padding: 15px;
             }
-            
+
             .info-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .order-summary {
                 grid-template-columns: 1fr;
             }
-            
+
             .order-actions {
                 justify-content: center;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Header -->
@@ -414,7 +430,7 @@ function getStatusColor($status) {
                                 <?php echo getStatusText($order['status']); ?>
                             </div>
                         </div>
-                        
+
                         <div class="order-body">
                             <div class="order-summary">
                                 <div class="summary-item">
@@ -430,14 +446,14 @@ function getStatusColor($status) {
                                     <div class="summary-value"><?php echo htmlspecialchars($order['payment_method'] ?? 'COD'); ?></div>
                                 </div>
                             </div>
-                            
+
                             <div class="order-actions">
                                 <a href="order_detail.php?id=<?php echo $order['id']; ?>" class="btn btn-primary">
                                     👁️ Xem chi tiết
                                 </a>
                                 <?php if ($order['status'] == 'pending'): ?>
-                                    <a href="cancel_order.php?id=<?php echo $order['id']; ?>" class="btn btn-outline" 
-                                       onclick="return confirm('Bạn có chắc muốn hủy đơn hàng này?')">
+                                    <a href="cancel_order.php?id=<?php echo $order['id']; ?>" class="btn btn-outline"
+                                        onclick="return confirm('Bạn có chắc muốn hủy đơn hàng này?')">
                                         ❌ Hủy đơn
                                     </a>
                                 <?php endif; ?>
@@ -473,11 +489,12 @@ function getStatusColor($status) {
             card.addEventListener('mouseenter', function() {
                 this.style.transform = 'translateY(-3px)';
             });
-            
+
             card.addEventListener('mouseleave', function() {
                 this.style.transform = 'translateY(0)';
             });
         });
     </script>
 </body>
+
 </html>

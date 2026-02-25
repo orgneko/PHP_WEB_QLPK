@@ -4,7 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 session_start();
-include 'config.php';
+include '../config/config.php';
 
 // Kiểm tra đăng nhập
 if (!isset($_SESSION['user_id'])) {
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $ghi_chu = $_POST['ghi_chu'];
     $phuong_thuc_thanh_toan = $_POST['phuong_thuc_thanh_toan'];
     $phuong_thuc_van_chuyen = $_POST['phuong_thuc_van_chuyen'];
-    
+
     // Tính phí vận chuyển
     $phi_van_chuyen = 0;
     switch ($phuong_thuc_van_chuyen) {
@@ -65,12 +65,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $phi_van_chuyen = 30000;
             break;
     }
-    
+
     $tong_tien = $total_amount + $phi_van_chuyen;
-    
+
     // Bắt đầu transaction
     $pdo->beginTransaction();
-    
+
     try {
         // Tạo đơn hàng
         $dia_chi_day_du = $dia_chi . ', ' . $phuong_xa . ', ' . $quan_huyen . ', ' . $tinh_thanh;
@@ -81,7 +81,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                       ?, ?, 'pending', NOW())";
         $stmt = $pdo->prepare($order_sql);
         $stmt->execute([
-            $user_id, $order_number, $tong_tien, $phuong_thuc_thanh_toan, $phuong_thuc_van_chuyen,
+            $user_id,
+            $order_number,
+            $tong_tien,
+            $phuong_thuc_thanh_toan,
+            $phuong_thuc_van_chuyen,
             $dia_chi_day_du
         ]);
         $order_id = $pdo->lastInsertId();
@@ -108,7 +112,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Chuyển hướng đến trang thành công
         header('Location: order_sucess.php?order_id=' . $order_id);
         exit();
-
     } catch (Exception $e) {
         $pdo->rollBack();
         $error_message = "Có lỗi xảy ra khi đặt hàng: " . $e->getMessage();
@@ -118,6 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -128,51 +132,51 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f5f5f5;
             line-height: 1.6;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-        
+
         .checkout-wrapper {
             display: grid;
             grid-template-columns: 1fr 400px;
             gap: 30px;
         }
-        
+
         .checkout-form {
             background: white;
             padding: 30px;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-        
+
         .order-summary {
             background: white;
             padding: 30px;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             height: fit-content;
         }
-        
+
         .form-group {
             margin-bottom: 20px;
         }
-        
+
         .form-group label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
             color: #333;
         }
-        
+
         .form-group input,
         .form-group select,
         .form-group textarea {
@@ -182,18 +186,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             border-radius: 4px;
             font-size: 14px;
         }
-        
+
         .form-group textarea {
             height: 80px;
             resize: vertical;
         }
-        
+
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
         }
-        
+
         .section-title {
             font-size: 18px;
             font-weight: bold;
@@ -202,18 +206,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             padding-bottom: 10px;
             border-bottom: 2px solid #007bff;
         }
-        
+
         .order-item {
             display: flex;
             align-items: center;
             padding: 15px 0;
             border-bottom: 1px solid #eee;
         }
-        
+
         .order-item:last-child {
             border-bottom: none;
         }
-        
+
         .item-image {
             width: 60px;
             height: 60px;
@@ -221,38 +225,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             border-radius: 4px;
             margin-right: 15px;
         }
-        
+
         .item-info {
             flex: 1;
         }
-        
+
         .item-name {
             font-weight: bold;
             margin-bottom: 5px;
         }
-        
+
         .item-price {
             color: #666;
             font-size: 14px;
         }
-        
+
         .item-quantity {
             color: #666;
             font-size: 14px;
         }
-        
+
         .item-total {
             font-weight: bold;
             color: #e74c3c;
         }
-        
+
         .summary-row {
             display: flex;
             justify-content: space-between;
             margin-bottom: 10px;
             padding: 5px 0;
         }
-        
+
         .summary-total {
             border-top: 2px solid #eee;
             padding-top: 15px;
@@ -261,7 +265,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             font-weight: bold;
             color: #e74c3c;
         }
-        
+
         .btn-primary {
             width: 100%;
             padding: 15px;
@@ -273,22 +277,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        
+
         .btn-primary:hover {
             background-color: #0056b3;
         }
-        
+
         .back-link {
             display: inline-block;
             margin-bottom: 20px;
             color: #007bff;
             text-decoration: none;
         }
-        
+
         .back-link:hover {
             text-decoration: underline;
         }
-        
+
         .error-message {
             background: #f8d7da;
             color: #721c24;
@@ -296,14 +300,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             border-radius: 4px;
             margin-bottom: 20px;
         }
-        
+
         .payment-methods {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
             margin-top: 10px;
         }
-        
+
         .payment-option {
             padding: 10px;
             border: 1px solid #ddd;
@@ -312,72 +316,73 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             cursor: pointer;
             transition: all 0.3s;
         }
-        
+
         .payment-option:hover {
             border-color: #007bff;
             background-color: #f8f9fa;
         }
-        
+
         .payment-option input[type="radio"] {
             margin-right: 5px;
         }
-        
+
         @media (max-width: 768px) {
             .checkout-wrapper {
                 grid-template-columns: 1fr;
             }
-            
+
             .form-row {
                 grid-template-columns: 1fr;
             }
-            
+
             .payment-methods {
                 grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <a href="cart.php" class="back-link">← Quay lại giỏ hàng</a>
-        
+
         <h1>Thanh toán</h1>
-        
+
         <?php if (isset($error_message)): ?>
             <div class="error-message"><?php echo $error_message; ?></div>
         <?php endif; ?>
-        
+
         <form method="POST" action="">
             <div class="checkout-wrapper">
                 <div class="checkout-form">
                     <div class="section-title">Thông tin giao hàng</div>
-                    
+
                     <div class="form-row">
                         <div class="form-group">
                             <label for="ho_ten">Họ và tên *</label>
-                            <input type="text" id="ho_ten" name="ho_ten" required 
-                                   value="<?php echo htmlspecialchars($user_info['full_name']); ?>">
+                            <input type="text" id="ho_ten" name="ho_ten" required
+                                value="<?php echo htmlspecialchars($user_info['full_name']); ?>">
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="email">Email *</label>
-                            <input type="email" id="email" name="email" required 
-                                   value="<?php echo htmlspecialchars($user_info['email']); ?>">
+                            <input type="email" id="email" name="email" required
+                                value="<?php echo htmlspecialchars($user_info['email']); ?>">
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="so_dien_thoai">Số điện thoại *</label>
-                        <input type="tel" id="so_dien_thoai" name="so_dien_thoai" required 
-                               value="<?php echo htmlspecialchars($user_info['phone']); ?>">
+                        <input type="tel" id="so_dien_thoai" name="so_dien_thoai" required
+                            value="<?php echo htmlspecialchars($user_info['phone']); ?>">
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="dia_chi">Địa chỉ *</label>
-                        <input type="text" id="dia_chi" name="dia_chi" required 
-                               value="<?php echo htmlspecialchars($user_info['address']); ?>">
+                        <input type="text" id="dia_chi" name="dia_chi" required
+                            value="<?php echo htmlspecialchars($user_info['address']); ?>">
                     </div>
-                    
+
                     <div class="form-row">
                         <div class="form-group">
                             <label for="tinh_thanh">Tỉnh/Thành phố *</label>
@@ -390,48 +395,48 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <option value="Hai Phong">Hải Phòng</option>
                             </select>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="quan_huyen">Quận/Huyện *</label>
                             <input type="text" id="quan_huyen" name="quan_huyen" required>
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="phuong_xa">Phường/Xã *</label>
                         <input type="text" id="phuong_xa" name="phuong_xa" required>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="ghi_chu">Ghi chú</label>
                         <textarea id="ghi_chu" name="ghi_chu" placeholder="Ghi chú thêm về đơn hàng..."></textarea>
                     </div>
-                    
+
                     <div class="section-title">Phương thức vận chuyển</div>
-                    
+
                     <div class="form-group">
                         <label>
                             <input type="radio" name="phuong_thuc_van_chuyen" value="buu_dien" required>
                             Gửi hàng qua bưu điện (+25.000đ)
                         </label>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>
                             <input type="radio" name="phuong_thuc_van_chuyen" value="chuyen_phat_nhanh" required>
                             Chuyển phát nhanh trong nước (+50.000đ)
                         </label>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>
                             <input type="radio" name="phuong_thuc_van_chuyen" value="giao_hang_truc_tiep" required>
                             Đưa hàng trực tiếp (+30.000đ)
                         </label>
                     </div>
-                    
+
                     <div class="section-title">Phương thức thanh toán</div>
-                    
+
                     <div class="payment-methods">
                         <div class="payment-option">
                             <label>
@@ -439,7 +444,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 Thanh toán bằng thẻ ATM
                             </label>
                         </div>
-                        
+
                         <div class="payment-option">
                             <label>
                                 <input type="radio" name="phuong_thuc_thanh_toan" value="truc_tiep" required>
@@ -448,61 +453,61 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="order-summary">
                     <div class="section-title">Đơn hàng của bạn</div>
-                    
+
                     <?php foreach ($cart_items as $item): ?>
                         <div class="order-item">
-                            <img src="<?php echo htmlspecialchars($item['hinh_anh']); ?>" 
-                                 alt="<?php echo htmlspecialchars($item['ten_san_pham']); ?>" 
-                                 class="item-image">
-                            
+                            <img src="<?php echo htmlspecialchars($item['hinh_anh']); ?>"
+                                alt="<?php echo htmlspecialchars($item['ten_san_pham']); ?>"
+                                class="item-image">
+
                             <div class="item-info">
                                 <div class="item-name"><?php echo htmlspecialchars($item['ten_san_pham']); ?></div>
                                 <div class="item-price"><?php echo number_format($item['gia'], 0, ',', '.'); ?>đ</div>
                                 <div class="item-quantity">Số lượng: <?php echo $item['quantity']; ?></div>
                             </div>
-                            
+
                             <div class="item-total">
                                 <?php echo number_format($item['gia'] * $item['quantity'], 0, ',', '.'); ?>đ
                             </div>
                         </div>
                     <?php endforeach; ?>
-                    
+
                     <div class="summary-row">
                         <span>Tạm tính:</span>
                         <span><?php echo number_format($total_amount, 0, ',', '.'); ?>đ</span>
                     </div>
-                    
+
                     <div class="summary-row">
                         <span>Phí vận chuyển:</span>
                         <span id="shipping-fee">0đ</span>
                     </div>
-                    
+
                     <div class="summary-row summary-total">
                         <span>Tổng cộng:</span>
                         <span id="total-amount"><?php echo number_format($total_amount, 0, ',', '.'); ?>đ</span>
                     </div>
-                    
+
                     <button type="submit" class="btn-primary">Đặt hàng</button>
                 </div>
             </div>
         </form>
     </div>
-    
+
     <script>
         // Cập nhật phí vận chuyển khi thay đổi phương thức
         const shippingMethods = document.querySelectorAll('input[name="phuong_thuc_van_chuyen"]');
         const shippingFeeElement = document.getElementById('shipping-fee');
         const totalAmountElement = document.getElementById('total-amount');
         const baseAmount = <?php echo $total_amount; ?>;
-        
+
         shippingMethods.forEach(method => {
             method.addEventListener('change', function() {
                 let shippingFee = 0;
-                
-                switch(this.value) {
+
+                switch (this.value) {
                     case 'buu_dien':
                         shippingFee = 25000;
                         break;
@@ -513,13 +518,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         shippingFee = 30000;
                         break;
                 }
-                
+
                 const total = baseAmount + shippingFee;
-                
+
                 shippingFeeElement.textContent = shippingFee.toLocaleString('vi-VN') + 'đ';
                 totalAmountElement.textContent = total.toLocaleString('vi-VN') + 'đ';
             });
         });
     </script>
 </body>
+
 </html>

@@ -3,8 +3,8 @@ session_start();
 
 // --- 1. KẾT NỐI DATABASE ---
 // Kiểm tra xem có file config không, nếu không thì kết nối trực tiếp
-if (file_exists('config/config.php')) {
-    require_once 'config/config.php';
+if (file_exists('../config/config.php')) {
+    require_once '../config/config.php';
 } else {
     $host = 'localhost';
     $db   = 'phongkham';
@@ -122,7 +122,7 @@ if (!function_exists('isAdmin')) {
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ms-auto py-0">
                     <a href="index.php" class="nav-item nav-link active">Trang chủ</a>
-                    <a href="booking.php" class="nav-item nav-link text-primary fw-bold">Đặt lịch khám</a>
+                    <a href="views/booking.php" class="nav-item nav-link text-primary fw-bold">Đặt lịch khám</a>
                     <a href="#services" class="nav-item nav-link">Gói khám</a>
                     <a href="#doctors" class="nav-item nav-link">Bác sĩ</a>
                     <a href="#footer" class="nav-item nav-link">Liên hệ</a>
@@ -146,7 +146,7 @@ if (!function_exists('isAdmin')) {
                             </ul>
                         </div>
                     <?php else: ?>
-                        <a href="login.php" class="btn btn-primary rounded-pill px-3 me-2">Đăng nhập</a>
+                        <a href="views/login.php" class="btn btn-primary rounded-pill px-3 me-2">Đăng nhập</a>
                         <a href="register.php" class="btn btn-primary rounded-pill px-3">Đăng ký</a>
                     <?php endif; ?>
                 </div>
@@ -167,7 +167,7 @@ if (!function_exists('isAdmin')) {
                             <h1 class="display-3 text-white animated slideInDown mb-4">Chăm Sóc Sức Khỏe <br>Toàn Diện Cho Bạn</h1>
                             <p class="fs-5 text-white mb-4 pb-2">Hệ thống đặt lịch khám thông minh, kết nối bác sĩ chuyên khoa hàng đầu mà không cần chờ đợi.</p>
 
-                            <a href="booking.php" class="btn btn-warning py-md-3 px-md-5 me-3 rounded-pill fw-bold text-dark">
+                            <a href="views/booking.php" class="btn btn-warning py-md-3 px-md-5 me-3 rounded-pill fw-bold text-dark">
                                 <i class="far fa-calendar-check me-2"></i>ĐẶT LỊCH NGAY
                             </a>
                         </div>
