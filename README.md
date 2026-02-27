@@ -28,11 +28,11 @@ git clone https://github.com/orgneko/PHP_WEB_QLPK.git
 ### 3️⃣ Cấu hình kết nối DB
 chỉnh file:
 config/config.php
-#### 4️⃣ Chạy project
+### 4️⃣ Chạy project
 Đặt folder vào htdocs
 Truy cập:
 http://localhost/PHP_WEB_QLPK/
-#####🔑 Chức năng chính
+####🔑 Chức năng chính
 👨‍⚕️ Quản lý bác sĩ
 
 Thêm / sửa / xóa bác sĩ
