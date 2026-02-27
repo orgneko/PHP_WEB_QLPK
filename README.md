@@ -1,3 +1,4 @@
+
 # 🏥 PHP_WEB_QLPK - Hệ Thống Quản Lý Phòng Khám
 
 ## 📖 Giới thiệu
@@ -25,21 +26,13 @@ git clone https://github.com/orgneko/PHP_WEB_QLPK.git
 - Import file SQL (nếu có)
 
 ### 3️⃣ Cấu hình kết nối DB
-
-Chỉnh file:
+chỉnh file:
 config/config.php
-```php
-$host = 'localhost';
-$db   = 'phongkham';
-$user = 'root';
-$pass = '';
-
-### 4️⃣ Chạy project
-
+#### 4️⃣ Chạy project
 Đặt folder vào htdocs
 Truy cập:
 http://localhost/PHP_WEB_QLPK/
-🔑 Chức năng chính
+#####🔑 Chức năng chính
 👨‍⚕️ Quản lý bác sĩ
 
 Thêm / sửa / xóa bác sĩ
@@ -67,6 +60,3 @@ Tách backend & frontend theo mô hình MVC
 Thêm xác thực JWT
 
 Chuyển sang React frontend
-
-👨‍💻 Tác giả
-Orgneko
