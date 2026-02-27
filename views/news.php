@@ -84,7 +84,7 @@ require_once '../config/config.php';
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link text-white" href="index.php">Trang chủ</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="products.php">Dịch vụ mới</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="services.php">Dịch vụ mới</a></li>
                     <li class="nav-item"><a class="nav-link text-warning" href="news.php">Tin tức và khuyến mãi</a></li>
                     <li class="nav-item"><a class="nav-link text-white" href="contact.php">Liên hệ</a></li>
                 </ul>

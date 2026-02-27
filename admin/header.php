@@ -85,7 +85,7 @@
 
                 <li><a href="customers.php"><i class="fas fa-users mr-2"></i> Bệnh nhân (Customers)</a></li>
                 <li><a href="inventory.php"><i class="fas fa-boxes mr-2"></i> Kho thuốc (Inventory)</a></li>
-                <li><a href="orders.php"><i class="fas fa-shopping-cart mr-2"></i> Đơn hàng cũ</a></li>
+                <li><a href="bookings.php"><i class="fas fa-shopping-cart mr-2"></i> Đơn hàng cũ</a></li>
                 <li><a href="change_password.php"><i class="fas fa-key mr-2"></i> Đổi mật khẩu</a></li>
             </ul>
 

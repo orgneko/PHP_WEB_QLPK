@@ -11,7 +11,7 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
     $search_term = '%' . $search_query . '%';
 
     $sql = "SELECT p.*, c.name AS ten_loai 
-            FROM products p 
+            FROM services p 
             LEFT JOIN categories c ON p.category_id = c.id 
             WHERE (p.name LIKE ? 
             OR p.code LIKE ? 
@@ -120,7 +120,7 @@ $categories = $categories_stmt->fetchAll();
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .products-grid {
+        .services-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
@@ -267,7 +267,7 @@ $categories = $categories_stmt->fetchAll();
         <?php endif; ?>
 
         <?php if (!empty($search_results)): ?>
-            <div class="products-grid">
+            <div class="services-grid">
                 <?php foreach ($search_results as $product): ?>
                     <div class="product-card">
                         <img src="<?php echo htmlspecialchars($product['hinh_anh']); ?>"

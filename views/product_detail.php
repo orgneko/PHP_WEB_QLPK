@@ -8,9 +8,9 @@ $product_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 // Lấy thông tin chi tiết Dịch vụ
 $stmt = $pdo->prepare("
     SELECT p.*, c.name as category_name, s.name as supplier_name 
-    FROM products p 
+    FROM services p 
     LEFT JOIN categories c ON p.category_id = c.id 
-    LEFT JOIN suppliers s ON p.supplier_id = s.id 
+    LEFT JOIN doctors s ON p.supplier_id = s.id 
     WHERE p.id = ?
 ");
 $stmt->execute([$product_id]);
@@ -24,12 +24,12 @@ if (!$product) {
 
 // Lấy các Dịch vụ liên quan (cùng Chuyên khoa)
 $stmt = $pdo->prepare("
-    SELECT * FROM products 
+    SELECT * FROM services 
     WHERE category_id = ? AND id != ? 
     LIMIT 4
 ");
 $stmt->execute([$product['category_id'], $product_id]);
-$related_products = $stmt->fetchAll();
+$related_services = $stmt->fetchAll();
 ?>
 
 <!DOCTYPE html>
@@ -154,11 +154,11 @@ $related_products = $stmt->fetchAll();
         </div>
 
         <!-- Dịch vụ liên quan -->
-        <?php if ($related_products): ?>
+        <?php if ($related_services): ?>
             <div class="mt-5">
                 <h3>Dịch vụ liên quan</h3>
                 <div class="row">
-                    <?php foreach ($related_products as $related): ?>
+                    <?php foreach ($related_services as $related): ?>
                         <div class="col-md-3">
                             <div class="card related-product-card">
                                 <img src="<?= htmlspecialchars($related['image_url']) ?>"

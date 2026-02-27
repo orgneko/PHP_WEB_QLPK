@@ -11,7 +11,7 @@ $user_id = $_SESSION['user_id'];
 $stmt = $pdo->prepare("
     SELECT c.*, p.name, p.price, p.sale_price, p.image_url, p.stock_quantity
     FROM cart c
-    JOIN products p ON c.product_id = p.id
+    JOIN services p ON c.product_id = p.id
     WHERE c.user_id = ?
     ORDER BY c.created_at DESC
 ");

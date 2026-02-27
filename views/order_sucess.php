@@ -25,7 +25,7 @@ if (!$order) {
 // Lấy chi tiết đơn hàng
 $details_sql = "SELECT oi.*, p.name AS ten_san_pham, p.image_url AS hinh_anh 
                 FROM order_items oi
-                JOIN products p ON oi.product_id = p.id
+                JOIN services p ON oi.product_id = p.id
                 WHERE oi.order_id = ?";
 $stmt = $pdo->prepare($details_sql);
 $stmt->execute([$order_id]);

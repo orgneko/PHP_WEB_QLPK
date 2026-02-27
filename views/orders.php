@@ -415,7 +415,7 @@ function getStatusColor($status)
                     <h3>Chưa có đơn hàng nào</h3>
                     <p>Bạn chưa có đơn hàng nào. Hãy bắt đầu mua sắm ngay!</p>
                     <div style="margin-top: 20px;">
-                        <a href="products.php" class="btn btn-primary">Mua sắm ngay</a>
+                        <a href="services.php" class="btn btn-primary">Mua sắm ngay</a>
                     </div>
                 </div>
             <?php else: ?>

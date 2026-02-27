@@ -37,7 +37,7 @@ if (!$order) {
 $stmt = $pdo->prepare("
     SELECT oi.*, p.name as product_name, p.image_url as product_image 
     FROM order_items oi 
-    LEFT JOIN products p ON oi.product_id = p.id 
+    LEFT JOIN services p ON oi.product_id = p.id 
     WHERE oi.order_id = ?
 ");
 $stmt->execute([$order_id]);
@@ -160,7 +160,7 @@ $status_text = [
             font-weight: 600;
         }
 
-        .products-section h3 {
+        .services-section h3 {
             margin-bottom: 15px;
             color: #333;
         }
@@ -307,7 +307,7 @@ $status_text = [
             </div>
 
             <!-- Danh sách Dịch vụ -->
-            <div class="products-section">
+            <div class="services-section">
                 <h3>📦 Dịch vụ đã đặt (<?php echo count($order_items); ?> Dịch vụ)</h3>
 
                 <?php foreach ($order_items as $item): ?>

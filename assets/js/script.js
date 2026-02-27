@@ -160,7 +160,7 @@ function changeService(serviceId, element) {
             ${listHTML}
         </ul>
         <div class="mt-4">
-            <a href="booking.php" class="btn btn-primary rounded-pill px-4 py-2 font-weight-bold shadow-sm">
+            <a href="views/booking.php" class="btn btn-primary rounded-pill px-4 py-2 font-weight-bold shadow-sm">
                 Đặt lịch khám ngay
             </a>
 
@@ -268,7 +268,7 @@ async function sendMessage() {
 
     try {
         // C. Gửi tin nhắn sang file PHP (Backend)
-        const response = await fetch('chat_ai.php', {
+        const response = await fetch('views/chat_ai.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

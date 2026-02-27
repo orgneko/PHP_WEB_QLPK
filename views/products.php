@@ -37,14 +37,14 @@ if (!empty($_GET['price_range'])) {
     }
 }
 
-$sql = "SELECT * FROM products";
+$sql = "SELECT * FROM services";
 if ($where) {
     $sql .= " WHERE " . implode(' AND ', $where);
 }
 $sql .= " ORDER BY created_at DESC";
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
-$products = $stmt->fetchAll();
+$services = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -194,12 +194,12 @@ $products = $stmt->fetchAll();
                     <!-- ... -->
 
                     <button type="submit" class="btn btn-primary mt-3">Lọc</button>
-                    <a href="products.php" class="btn btn-outline-secondary mt-3">Reset</a>
+                    <a href="services.php" class="btn btn-outline-secondary mt-3">Reset</a>
                 </form>
             </div>
             <div class="col-md-9">
                 <div class="product-grid">
-                    <?php foreach ($products as $p): ?>
+                    <?php foreach ($services as $p): ?>
                         <div class="product-card">
                             <a href="product_detail.php?id=<?= $p['id'] ?>" style="text-decoration:none; color:inherit;">
                                 <div class="product-image">
