@@ -33,7 +33,7 @@ config/config.php
 Truy cập:
 http://localhost/PHP_WEB_QLPK/
 
-#### 🔑 Chức năng chính
+## 🔑 Chức năng chính
 👨‍⚕️ Quản lý bác sĩ
 
 Thêm / sửa / xóa bác sĩ
