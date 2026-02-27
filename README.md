@@ -32,6 +32,7 @@ config/config.php
 Đặt folder vào htdocs
 Truy cập:
 http://localhost/PHP_WEB_QLPK/
+
 ####🔑 Chức năng chính
 👨‍⚕️ Quản lý bác sĩ
 
